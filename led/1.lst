@@ -1,0 +1,43 @@
+ARM GAS  1.s 			page 1
+
+
+   1              		.thumb
+   2              		.syntax unified
+   3              	        .cpu cortex-m4
+   4              	
+   5              		.equ STACHINIT,		0x20005000	@堆栈顶
+   6              	
+   7              	vectors:					@向量表
+   8 0000 00500020 		.word STACHINIT	
+   9 0004 1D000000 		.word _start + 1			@复位向量，+1 表示thumb
+  10 0008 25000000 	        .word _nmi_handler + 1 
+  11 000c 25000000 	        .word _hard_fault + 1 
+  12 0010 25000000 	        .word _memory_fault + 1 
+  13 0014 25000000 	        .word _bus_fault + 1
+  14 0018 25000000 	        .word _usage_fault + 1
+  15              	_start:
+  16 001c 0046     		mov r0, r0
+  17 001e 0046     		mov r0, r0
+  18 0020 41F23420 		mov r0, # 0x1234
+  19              	_nmi_handler:	
+  20              	_hard_fault:	
+  21              	_memory_fault:	
+  22              	_bus_fault:	
+  23              	_usage_fault:
+  24 0024 7047     		bx lr
+ARM GAS  1.s 			page 2
+
+
+DEFINED SYMBOLS
+                 1.s:5      *ABS*:0000000020005000 STACHINIT
+                 1.s:7      .text:0000000000000000 vectors
+                 1.s:15     .text:000000000000001c _start
+                 1.s:19     .text:0000000000000024 _nmi_handler
+                 1.s:20     .text:0000000000000024 _hard_fault
+                 1.s:21     .text:0000000000000024 _memory_fault
+                 1.s:22     .text:0000000000000024 _bus_fault
+                 1.s:23     .text:0000000000000024 _usage_fault
+                            .text:0000000000000000 $d
+                 1.s:16     .text:000000000000001c $t
+
+NO UNDEFINED SYMBOLS
