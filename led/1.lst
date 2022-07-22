@@ -1,43 +1,226 @@
 ARM GAS  1.s 			page 1
 
 
-   1              		.thumb
-   2              		.syntax unified
-   3              	        .cpu cortex-m4
-   4              	
-   5              		.equ STACHINIT,		0x20005000	@堆栈顶
-   6              	
-   7              	vectors:					@向量表
-   8 0000 00500020 		.word STACHINIT	
-   9 0004 1D000000 		.word _start + 1			@复位向量，+1 表示thumb
-  10 0008 25000000 	        .word _nmi_handler + 1 
-  11 000c 25000000 	        .word _hard_fault + 1 
-  12 0010 25000000 	        .word _memory_fault + 1 
-  13 0014 25000000 	        .word _bus_fault + 1
-  14 0018 25000000 	        .word _usage_fault + 1
-  15              	_start:
-  16 001c 0046     		mov r0, r0
-  17 001e 0046     		mov r0, r0
-  18 0020 41F23420 		mov r0, # 0x1234
-  19              	_nmi_handler:	
-  20              	_hard_fault:	
-  21              	_memory_fault:	
-  22              	_bus_fault:	
-  23              	_usage_fault:
-  24 0024 7047     		bx lr
+   1              		@n32g430c8l
+   2              		@
+   3              		@
+   4              		@
+   5              		@
+   6              		.thumb
+   7              		.syntax unified
+   8              		.equ STACHINIT,		0x20005000	@堆栈顶
+   9              	
+  10              	vectors:					@向量表
+  11 0000 00500020 		.word STACHINIT	
+  12 0004 11010000 		.word _start + 1			@复位向量
+  13 0008 6B010000 	        .word _nmi_handler + 1 
+  14 000c 6B010000 	        .word _hard_fault + 1 
+  15 0010 6B010000 	        .word _memory_fault + 1 
+  16 0014 6B010000 	        .word _bus_fault + 1
+  17 0018 6B010000 	        .word _usage_fault + 1
+  18 001c 00000000 		.word 0
+  19 0020 00000000 		.word 0
+  20 0024 00000000 		.word 0
+  21 0028 00000000 		.word 0
+  22 002c 00000000 		.word 0 @_svc_handler + 1
+  23 0030 00000000 		.word 0 @_debugmon_handler + 1
+  24 0034 00000000 		.word 0
+  25 0038 00000000 		.word 0 @_pendsv_handler + 1
+  26 003c 00000000 		.word 0 @_systick_handler +1
+  27              		@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  28 0040 6B010000 		.word aaa +1 @0 _wwdg +1
+  29 0044 6B010000 		.word aaa +1 @1 _pvd +1
+  30 0048 6B010000 		.word aaa +1 @2 _rtc_tamper_stamp +1
+  31 004c 6B010000 		.word aaa +1 @3 _rtc_wkup +1
+  32 0050 6B010000 		.word aaa +1 @4 _flash +1
+  33 0054 6B010000 		.word aaa +1 @5 _rcc +1
+  34 0058 6B010000 		.word aaa +1 @6 _exti0 +1
+  35 005c 6B010000 		.word aaa +1 @7 _exti1 +1
+  36 0060 6B010000 		.word aaa +1 @8 _exti2 +1
+  37 0064 6B010000 		.word aaa +1 @9 _exti3 +1
+  38 0068 6B010000 		.word aaa +1 @10 _exti4 +1
+  39 006c 6B010000 		.word aaa +1 @11 _dma_channel1 +1
+  40 0070 6B010000 		.word aaa +1 @12 _dma_channel2 +1
+  41 0074 6B010000 		.word aaa +1 @13 _dma_channel3 +1
+  42 0078 6B010000 		.word aaa +1 @14 _dma_channel4 +1
+  43 007c 6B010000 		.word aaa +1 @15 _dma_channel5 +1
+  44 0080 6B010000 		.word aaa +1 @16 _dma_channel6 +1
+  45 0084 6B010000 		.word aaa +1 @17 _dma_channel7 +1
+  46 0088 6B010000 		.word aaa +1 @18 _dma_channel8 +1
+  47 008c 6B010000 		.word aaa +1 @19 _adc +1
+  48 0090 6B010000 		.word aaa +1 @20 _mmu +1
+  49 0094 6B010000 		.word aaa +1 @21 _comp_1_2_3 +1
+  50 0098 6B010000 		.word aaa +1 @22 _exti9_5 +1
+  51 009c 6B010000 		.word aaa +1 @23 _tim1_brk +1
+  52 00a0 6B010000 		.word aaa +1 @24 _tim1_up +1
+  53 00a4 6B010000 		.word aaa +1 @25 _tim1_trg_com +1
+  54 00a8 6B010000 		.word aaa +1 @26 _tim1_cc +1
+  55 00ac 6B010000 		.word aaa +1 @28 _tim2 +1
+  56 00b0 6B010000 		.word aaa +1 @29 _tim3 +1
+  57 00b4 6B010000 		.word aaa +1 @30 _tim4 +1
 ARM GAS  1.s 			page 2
 
 
+  58 00b8 6B010000 		.word aaa +1 @31 _i2c1_ev +1
+  59 00bc 6B010000 		.word aaa +1 @32 _i2c1_er +1
+  60 00c0 6B010000 		.word aaa +1 @33 _i2c2_ev +1
+  61 00c4 6B010000 		.word aaa +1 @34 _i2c2_er +1
+  62 00c8 6B010000 		.word aaa +1 @35 _spi1 +1
+  63 00cc 6B010000 		.word aaa +1 @36 _spi2 +1
+  64 00d0 6B010000 		.word aaa +1 @37 _usart1 +1
+  65 00d4 6B010000 		.word aaa +1 @38 _usart2 +1
+  66 00d8 6B010000 		.word aaa +1 @39 _uart3 +1
+  67 00dc 6B010000 		.word aaa +1 @40 _exti15_10 +1
+  68 00e0 6B010000 		.word aaa +1 @41 _rtcalarm +1
+  69 00e4 6B010000 		.word aaa +1 @42 _lptim_wkup +1
+  70 00e8 6B010000 		.word aaa +1 @43 _tim8_brk +1
+  71 00ec 6B010000 		.word aaa +1 @44 _tim8_up +1
+  72 00f0 6B010000 		.word aaa +1 @45 _tim8_cc +1
+  73 00f4 6B010000 		.word aaa +1 @46 _uart4 +1
+  74 00f8 6B010000 		.word aaa +1 @47 _tim5 +1
+  75 00fc 6B010000 		.word aaa +1 @48 _tim6 +1
+  76 0100 6B010000 		.word aaa +1 @49 _can_tx +1
+  77 0104 6B010000 		.word aaa +1 @50 _can_rx0 +1
+  78 0108 6B010000 		.word aaa +1 @51 _can_rx1 +1
+  79 010c 6B010000 		.word aaa +1 @52 _can_sce +1
+  80              	_start:
+  81              	__shizhong:
+  82 0110 164A     		ldr r2, = 0x40022000   @FLASH访问控制
+  83 0112 3321     		movs r1, # 0x33
+  84 0114 1160     		str r1, [r2]           @FLASH缓冲 缓冲开启
+  85 0116 1648     		ldr r0, = 0x40021000 @ rcc
+  86 0118 4FF00111 		ldr r1, = 0x10001
+  87 011c 0160     		str r1, [r0]
+  88              	__denghse:
+  89 011e 0168     		ldr r1, [r0]
+  90 0120 8903     		lsls r1, r1, # 14
+  91 0122 FCD5     		bpl __denghse
+  92              	__dengpllguan:
+  93 0124 0168     		ldr r1, [r0]
+  94 0126 8901     		lsls r1, r1, # 6
+  95 0128 FCD4     		bmi __dengpllguan
+  96 012a 1249     		ldr r1, = 0x390002
+  97 012c 0046     		mov r0, r0
+  98 012e 4160     		str r1, [r0, # 0x04]
+  99 0130 0046     		mov r0, r0
+ 100 0132 1149     		ldr r1, = 0x1010000
+ 101 0134 0046     		mov r0, r0
+ 102 0136 0160     		str r1, [r0]
+ 103              	
+ 104              	__dengpll:
+ 105 0138 0168     		ldr r1, [r0]
+ 106 013a 8901     		lsls r1, # 6
+ 107 013c FCD5     		bpl __dengpll
+ 108              	__waishe_shizhong:
+ 109              	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ 110              		@外设时钟
+ 111              		@rcc_ahbpclken  0x40021014
+ 112              		@0=dma,2=sram,4=flitf,6=crc,7=pa,8=pb,9=pc,10=pd,12=adc
+ 113              		@rcc_apb2pclken 0x40021018
+ 114              		@0=afio,1=beeper,11=tim1,12=spi1,13=tim8,14=usart1,17=uart3,19=spi2
+ARM GAS  1.s 			page 3
+
+
+ 115              		@rcc_apb1pclken 0x4002101c
+ 116              		@0=tim2,1=tim3,2=tim4,3=tim5,4=tim6,6=comp,7=compfilt,11wwdg,
+ 117              		@17=usart2,21=i2c1,22=i2c2,25=can,28=pwr
+ 118              	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ 119 013e 40F29471 		movw r1, # 0x794
+ 120 0142 4161     		str r1, [r0, # 0x14]
+ 121              	
+ 122              	
+ 123              	__io_shezhi:
+ 124              	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ 125              		@   pa=0x40023400,    pb=0x40023800,  pc=0x40023c00,  pd=0x40024000
+ 126              	        @0x00 端口模式寄存器(GPIOx_PMODE)
+ 127              		@寄存器复位值
+ 128              		@pa=0xabffffff  pb= 0xfffffebf  pc= 0xfc000000   pd=0xff000000
+ 129              		@00=输入模式，01=通用输出模式，10=复用功能模式，11模拟功能模式
+ 130              		@0x04 端口类型定义寄存器(GPIOx_POTYPE) 复位值0
+ 131              		@ 0=推挽输出，1=开漏输出
+ 132              		@0x08 翻转率配置寄存器(GPIOx_SR)
+ 133              		@复位值，PA=0XFFFF，PB=0XFFFF，PC=0XE000,PD=0XF001
+ 134              		@0=快速，1=慢速
+ 135              		@0x0c 端口上下拉寄存器(GPIOx_PUPD)
+ 136              		@寄存器复位值
+ 137              		@pa=0x64000000,pb=0x100,pc=0,pd=0x02
+ 138              		@00=无上拉下拉，01=上拉，10=下拉
+ 139              		@0x10 端口输入数据寄存器(GPIOx_PID)
+ 140              		@0x14 端口输出数据寄存器(GPIOx_POD)
+ 141              		@0x18 GPIO 端口位设置/清除寄存器(GPIOx_PBSC)
+ 142              		@高16位 pbcy = 1 IO低,  低16位 pbsy = 1 IO高
+ 143              		@0x1c 端口锁定配置寄存器(GPIOx_PLOCK)
+ 144              		@高16 PLOCKK=1端口配置锁键位被激活
+ 145              		@低16 PLOCKY=1锁定端口的配置
+ 146              		@0x20 复用功能低配置寄存器(GPIOx_AFL)
+ 147              		@复用功能高配置寄存器(GPIOx_AFH)
+ 148              		@af0=0000,af1=0001,af2=0010,af3=0011...................
+ 149              		@0x24 端口位清除寄存器(GPIOx_PBC)
+ 150              		@pbcy=1 清除对应的 PODy 位为 0
+ 151              		@0x28 驱动能力配置寄存器(GPIOx_DS)
+ 152              		@复位值
+ 153              		@PA=0X55555555,PB=0X55555555,PC=0X54000000,PD=0X55000001
+ 154              		@00=2mA,01=8mA,10=4mA,11=12mA
+ 155              	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ 156 0144 0D48     		ldr r0, = 0x40023400
+ 157 0146 0E49     		ldr r1, = 0xabfffffd
+ 158 0148 0160     		str r1, [r0]
+ 159              		
+ 160              	__ting:
+ 161 014a 0E48     		ldr r0, = 0x40023418
+ 162 014c 4FF00102 		mov r2, # 0x01
+ 163 0150 1346     		mov r3, r2
+ 164 0152 0260     		str r2, [r0] @开
+ 165 0154 1B04     		lsls r3, r3,  # 16
+ 166 0156 6FF07F41 		ldr r1, = 0xffffff
+ 167              	__led_kai_yanshi:
+ 168 015a 0139     		subs r1, r1, # 1
+ 169 015c FDD1     		bne __led_kai_yanshi
+ 170 015e 6FF07F41 		ldr r1, = 0xffffff
+ 171 0162 0360     		str r3, [r0] @关
+ARM GAS  1.s 			page 4
+
+
+ 172              	__led_guan_yanshi:
+ 173 0164 0139     		subs r1, r1, # 1
+ 174 0166 FDD1     		bne __led_guan_yanshi
+ 175 0168 EFE7     		b __ting
+ 176              		
+ 177              	_nmi_handler:	
+ 178              	_hard_fault:	
+ 179              	_memory_fault:	
+ 180              	_bus_fault:	
+ 181              	_usage_fault:
+ 182              	aaa:
+ 183 016a 70470020 		bx lr
+ 183      02400010 
+ 183      02400200 
+ 183      39000000 
+ 183      01010034 
+ARM GAS  1.s 			page 5
+
+
 DEFINED SYMBOLS
-                 1.s:5      *ABS*:0000000020005000 STACHINIT
-                 1.s:7      .text:0000000000000000 vectors
-                 1.s:15     .text:000000000000001c _start
-                 1.s:19     .text:0000000000000024 _nmi_handler
-                 1.s:20     .text:0000000000000024 _hard_fault
-                 1.s:21     .text:0000000000000024 _memory_fault
-                 1.s:22     .text:0000000000000024 _bus_fault
-                 1.s:23     .text:0000000000000024 _usage_fault
+                 1.s:8      *ABS*:0000000020005000 STACHINIT
+                 1.s:10     .text:0000000000000000 vectors
+                 1.s:80     .text:0000000000000110 _start
+                 1.s:177    .text:000000000000016a _nmi_handler
+                 1.s:178    .text:000000000000016a _hard_fault
+                 1.s:179    .text:000000000000016a _memory_fault
+                 1.s:180    .text:000000000000016a _bus_fault
+                 1.s:181    .text:000000000000016a _usage_fault
+                 1.s:182    .text:000000000000016a aaa
+                 1.s:81     .text:0000000000000110 __shizhong
                             .text:0000000000000000 $d
-                 1.s:16     .text:000000000000001c $t
+                 1.s:82     .text:0000000000000110 $t
+                 1.s:88     .text:000000000000011e __denghse
+                 1.s:92     .text:0000000000000124 __dengpllguan
+                 1.s:104    .text:0000000000000138 __dengpll
+                 1.s:108    .text:000000000000013e __waishe_shizhong
+                 1.s:123    .text:0000000000000144 __io_shezhi
+                 1.s:160    .text:000000000000014a __ting
+                 1.s:167    .text:000000000000015a __led_kai_yanshi
+                 1.s:172    .text:0000000000000164 __led_guan_yanshi
+                 1.s:183    .text:000000000000016c $d
 
 NO UNDEFINED SYMBOLS
