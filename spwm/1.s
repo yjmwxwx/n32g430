@@ -119,11 +119,25 @@ __waishe_shizhong:
 	str r1, [r0, # 0x14]
 	movw r1, # 0x1800
 	str r1, [r0, # 0x18]
+	movs r1, # 0x02
+	str r1, [r0, # 0x1c]
 	movw r1, # 0x3c00
 	str r1, [r0, # 0x2c]
 	movs r1, # 0x01
 	str r1, [r0, # 0x80]
 
+
+_neicunqingling:
+	ldr r0, = 0x20004000
+	ldr r2, = 0x20000000
+	movs r1, # 0
+_neicunqinglingxunhuan:
+	subs r0, r0, # 4
+	str r1, [r0]
+	cmp r0, r2
+	bne _neicunqinglingxunhuan
+
+	
 __io_shezhi:
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	@   pa=0x40023400,    pb=0x40023800,  pc=0x40023c00,  pd=0x40024000
@@ -185,18 +199,30 @@ __dma_chushihua:
 	str r1, [r0, # 0x10]
 	ldr r1, = dianyabiao
 	str r1, [r0, # 0x14]
-	ldr r1, = 1000
+	ldr r1, = 4000		@采样数量	sl
 	str r1, [r0, # 0x0c]
 	ldr r1, = 0x35a1 @  0x583        @ 5a1
 	str r1, [r0, # 0x08]
 	
-
+__tim3chushihua:
+	ldr r3, = 0x40000400 @ tim3_cr1
+	ldr r2, = 0
+	str r2, [r3, # 0x28] @ psc
+	ldr r2, = 639			@639=200KHZ
+	str r2, [r3, # 0x2c] @ ARR
+	movs r2, # 0x20
+	str r2, [r3, # 0x04] @ TRGO
+	movs r2, # 0x06
+	str r2, [r3, # 0x08]
+	movs r2, # 0x81
 __tim1_chushiha:
 	ldr r0, = 0x40012c00 @ tim1_cr1
 	movs r1, # 0
 	str r1, [r0, # 0x28] @ psc
-	ldr r1, = 64000
+	ldr r1, = 63999
 	str r1, [r0, # 0x2c] @ ARR
+	lsrs r1, r1, # 1
+	str r1, [r0, # 0x34]
 	ldr r1, = 0x68
 	str r1, [r0, # 0x18] @ ccmr2  CC3
 	ldr r1, = 0x01    @  CC3
@@ -205,23 +231,33 @@ __tim1_chushiha:
 	str r1, [r0, # 0x44] @ BDTR
 	ldr r1, = 0x81
 	str r1, [r0]
-	
+	str r2, [r3]
+
 	
 __adc_chushihua:
 	ldr r0, = 0x40020800
-	ldr r1, =  0x800001
-	str r1, [r0, # 0x08]
-	ldr r1, = 0xffff
-__adc_yanshi:
-	subs r1, r1, # 1
-	bne __adc_yanshi
-	movs r1, # 17
+	ldr r1, =  0x05
+	str r1, [r0, # 0x08]		@开ADC和校准
+__deng_adc_jiaozhun:	
+	ldr r1, [r0, # 0x08]
+	lsls r1, r1, # 29
+	bmi __deng_adc_jiaozhun		@等ADC校准
+__deng_adc_zhunbeihao:
+	ldr r1, [r0, # 0x58]
+	lsls r1, r1, # 26
+	bpl __deng_adc_zhunbeihao	@等ADC准备好
+	ldr r1, = 0x100000
+	str r1, [r0, # 0x2c]
+	movs r1, # 0xa4		@通道
 	str r1, [r0, # 0x34]
-	ldr r1, = 0x800103
+	movw r1, # 0x100
+	str r1, [r0, # 0x04]
+	ldr r1, = 0x180101
 	str r1, [r0, # 0x08]
-	str r1, [r0, # 0x08]
+        str r1, [r0, # 0x08]		@为啥还要开两次。。。
 	
 
+	
 __spi_chushihua:
 	ldr r0, = 0x40013000	
 	movw r1, # 0x436c
@@ -267,6 +303,9 @@ __lcd_chushihua:
 	bl __xie_spi1		@调节器开、追踪器开
 	movs r0, # 0xaf		@显示开
 	bl __xie_spi1
+
+
+
 	
 	bl __lcd_qingping
 
@@ -276,9 +315,8 @@ __lcd_chushihua:
 
 
 
-
 adc:
-	ldr r0, = 0x20000200
+	ldr r0, = 0x40020800
 	ldrh r0, [r0, # 0x4c]
         movs r1, # 8
 	ldr r2, = asciibiao
@@ -292,12 +330,6 @@ adc:
 	
 	
 	b adc
-
-
-
-
-
-
 
 
 	
@@ -411,6 +443,7 @@ __lcd_yanshi:
 	subs r2, r2, # 1
 	bne __lcd_yanshi
 	bx lr
+	
 __lcd_qingping:
 	push {r0-r4,lr}
 	movs r3, # 0xb0
@@ -447,6 +480,7 @@ __heng_sao1:
 	subs r1, r1, # 1
 	bne __heng_sao1
 	b __ye_jia1
+
 	
 __xie_lcd_weizhi:
 	@入口R0=要写的地址(低16=X，高16=Y=（0-131(r5=高4,R4=低4))
