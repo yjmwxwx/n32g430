@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+void main() {
+  float m,pi,sr,si;
+
+  int rr,ii, n,i,dyb,dft;
+  dft = 0;
+  n=8;
+  m=1;
+  pi=3.141592;    
+	for(i=0;i<n;i++){
+	   sr=cos(2*pi*i*m/n);
+	   si=-sin(2*pi*i*m/n);
+	   rr=sr*0x8000;
+	   ii=si*0x8000;
+	   dyb = rr / 64 ;
+	   dft = dft + dyb;
+	   printf("0x%04X,0x%04X,",rr,ii);
+}
+	printf("\n");
+	printf ("0x%04x  \n", dft);
+}
+	
