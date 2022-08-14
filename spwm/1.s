@@ -191,15 +191,13 @@ __io_shezhi:
 	str r1, [r0, # 0x24]
 	@PB
 	ldr r0, = 0x40023800
-	ldr r1, = 0xebffe9bf
+	ldr r1, = 0xf0ffe9bf
 	str r1, [r0]
-	movs r1, # 0
+	ldr r1, = 0x5000000
 	str r1, [r0, # 0x0c]
 	ldr r1, = 0x3102000
 	str r1, [r0, # 0x20]
-	ldr r1, = 0x3300000
-	str r1, [r0, # 0x24]
-
+	
 __dma_chushihua:
 	ldr r0, = 0x40020000
         movs r1, # 0
@@ -243,6 +241,15 @@ __deng_adc_zhunbeihao:
 @	movs r1, # 0x07
 @	str r1, [r0]    @systick 开
 
+
+__chushihua_bianliang:
+	ldr r0, = jiaodu
+	movs r1, # 0
+	str r1, [r0]
+	ldr r0, = zhenfu
+	ldr r1, = 0x8000
+	str r1, [r0]
+	
 __tim4_chushihua:
 	ldr r0, = 0x40000800
 	ldr r1, = 399
@@ -272,7 +279,7 @@ __tim1_chushiha:
 	str r1, [r0, # 0x2c] @ ARR
 	ldr r1, = 0x6868
 	str r1, [r0, # 0x18]   
-	ldr r1, = 0xdd    
+	ldr r1, = 0x11    
 	str r1, [r0, # 0x20] @ ccer
 	ldr r1, = 0x8000
 	str r1, [r0, # 0x44] @ BDTR
@@ -333,8 +340,8 @@ __lcd_chushihua:
 	bl __lcd_qingping
 
 
-__guoling_xianshi:
-	ldr r0, = guoling_shijian
+__ting:
+	ldr r0, = zhenfu
 	ldr r0, [r0]
 	movs r1, # 8
 	ldr r2, = asciibiao
@@ -343,9 +350,116 @@ __guoling_xianshi:
 	movs r0, # 8            @写几个字
 	movs r1, # 48           @字库单字长度
 	movs r2, # 3            @宽度
-	ldr r3, =  0x100b2              @lcd位置
+	ldr r3, =  0x100b0              @lcd位置
 	bl __xie_lcd_ascii
-	b __guoling_xianshi
+	ldr r0, = jiaodu
+	ldr r0, [r0]
+	movs r1, # 8
+	ldr r2, = asciibiao
+	movs r3, # 0xff
+	bl _zhuanascii
+	movs r0, # 8            @写几个字
+	movs r1, # 48           @字库单字长度
+	movs r2, # 3            @宽度
+	ldr r3, =  0x100b3              @lcd位置
+	bl __xie_lcd_ascii
+	
+	
+	bl __an_jian
+	lsls r0, r0, # 2
+	ldr r1, = an_jian_biao
+	ldr r2, [r1, r0]
+	mov pc, r2
+
+	
+__tiao_zhenfu:
+	bl __an_jian
+	cmp r0, # 0
+	beq __tiao_jiaodu
+	cmp r0, # 1
+	beq __zhenfu_jia
+	cmp r0, # 2
+	beq __zhenfu_jian
+	b __xianshi_zhenfu
+__zhenfu_jia:
+	ldr r0, = zhenfu
+	ldr r2, = 0x8000
+	ldr r1, [r0]
+	adds r1, r1, # 100
+	str r1, [r0]
+	cmp r1, r2
+	bls __xianshi_zhenfu
+	movs r1, r2
+	str r1, [r0]
+	b __xianshi_zhenfu
+__zhenfu_jian:
+	ldr r0, = zhenfu
+	ldr r1, [r0]
+	subs r1, r1, # 100
+	str r1, [r0]
+	movs r1, r1
+	bpl __xianshi_zhenfu
+	mov r1, # 0
+	str r1, [r0]
+__xianshi_zhenfu:
+	ldr r0, = zhenfu
+	ldr r0, [r0]
+	movs r1, # 8
+	ldr r2, = asciibiao
+	movs r3, # 0xff
+	bl _zhuanascii
+	movs r0, # 8            @写几个字
+	movs r1, # 48           @字库单字长度
+	movs r2, # 3            @宽度
+	ldr r3, =  0x100b0              @lcd位置
+	bl __xie_lcd_ascii
+	b __tiao_zhenfu
+
+
+
+__tiao_jiaodu:
+	bl __an_jian
+	cmp r0, # 0
+	beq __tiao_zhenfu
+	cmp r0, # 1
+	beq __jiaodu_jia
+	cmp r0, # 2
+	beq __jiaodu_jian
+	b __xianshi_jiaodu
+__jiaodu_jia:
+	ldr r0, = jiaodu
+	ldr r2, = 800
+	ldr r1, [r0]
+	adds r1, r1, # 2
+	str r1, [r0]
+	cmp r1, r2
+	bls __xianshi_jiaodu
+	movs r1, r2
+	str r1, [r0]
+	b __xianshi_jiaodu
+__jiaodu_jian:
+	ldr r0, = jiaodu
+	ldr r1, [r0]
+	subs r1, r1, # 2
+	str r1, [r0]
+	movs r1, r1
+	bpl __xianshi_jiaodu
+	mov r1, # 0
+	str r1, [r0]
+__xianshi_jiaodu:
+	ldr r0, = jiaodu
+	ldr r0, [r0]
+	movs r1, # 8
+	ldr r2, = asciibiao
+	movs r3, # 0xff
+	bl _zhuanascii
+	movs r0, # 8            @写几个字
+	movs r1, # 48           @字库单字长度
+	movs r2, # 3            @宽度
+	ldr r3, =  0x100b3              @lcd位置
+	bl __xie_lcd_ascii
+	b __tiao_jiaodu
+	
 
 
 adc:
@@ -369,7 +483,7 @@ adc:
 	ldr r0, = 0x20000100
 	movs r1, # 0
 	str r1, [r0]
-__ting:
+led:
 	ldr r0, = 0x40023418
 	movs r2, # 0x01
 	mov r3, r2
@@ -385,7 +499,10 @@ __led_guan_yanshi:
 	subs r1, r1, # 1
 	bne __led_guan_yanshi
 	bl __jishu_shiyan
-	b __ting
+	b led
+
+	
+
 	
 __jishu_shiyan:
 	push {r0-r4,lr}
@@ -409,7 +526,15 @@ __xianshi_shuzi:
 	ldr r3, =  0x100b2              @lcd位置
 	bl __xie_lcd_ascii
 	pop {r0-r4,pc}
-
+__an_jian:
+	push {r1}
+	ldr r1, = 0x40023810
+	ldr r0, [r1]	@pa13 pa14
+	mvns r0, r0
+	lsls r0, r0, # 18
+	lsrs r0, r0, # 30
+	pop {r1}
+	bx lr
 	
 
 __dft_jisuan:
@@ -764,7 +889,9 @@ __du_ch2:
 __xieru_spwm:
 	ldrh r8, [r1, r2]
 	ldr r6, = 0x40012c34
-	ldr r4, = 32768		@振幅设置
+	@	ldr r4, = 32768		@振幅设置
+	ldr r4, = zhenfu
+	ldr r4, [r4]
 	mul r3, r3, r4
 	mul r8, r8, r4
 	lsrs r3, r3, # 15
@@ -783,13 +910,17 @@ _tim4:
 	movs r2, # 0x01
 	str r2, [r1, # 0x14]
 	ldr r0, = spwm_zhizhen
-	movw r2, # 0
+	ldr r2, = jiaodu
+	ldr r2, [r2]
+@	movw r2, # 0
 	str r2, [r0]
 	bx lr
 	.ltorg
 	.section .data
 	.equ STACHINIT,         0x20004000      @堆栈顶
 	.equ asciibiao,		0x20000000	@ASCII表
+	.equ zhenfu,		0x200001dc	@振幅
+	.equ jiaodu,		0x200001e0	@相位
 	.equ guoling_shijian,	0x200001e4	@过零时间
 	.equ spwm_zhizhen,	0x200001e8	@spwm表指针
 	.equ dianya_jiaodu,	0x200001ec	@电压角度
@@ -797,6 +928,12 @@ _tim4:
 	.equ sp_zhizhen,	0x200001fc	@堆栈指针
 	.equ dianyabiao,	0x20000200	@电压表
 	.equ cos_biao,		0x20000300	@cos_表
+	.align 4
+an_jian_biao:
+	.word __ting   		      	   	   +1
+	.word __tiao_zhenfu     	   	   +1
+	.word __tiao_jiaodu      	   	   +1
+	.word __ting         		           +1
 	.align 4
 sin_biao:
 	.short 3200,3250,3300,3350,3400,3451,3501,3551,3601,3650,3700,3750,3799,3848,3897,3946,3995,4044,4092,4140,4188,4236,4283,4330,4377,4424,4470,4516,4562,4607,4652,4697,4741,4785,4828,4871,4914,4956,4998,5039,5080,5121,5160,5200,5239,5277,5315,5353,5390,5426,5462,5497,5532,5566,5599,5632,5665,5696,5728,5758,5788,5817,5846,5874,5901,5928,5953,5979,6003,6027,6050,6073,6094,6116,6136,6155,6174,6192,6210,6227,6242,6258,6272,6286,6298,6311,6322,6333,6342,6351,6360,6367,6374,6380,6385,6389,6393,6395,6397,6399,6399,6399,6397,6395,6393,6389,6385,6380,6374,6367,6360,6351,6342,6333,6322,6311,6298,6286,6272,6258,6242,6227,6210,6192,6174,6155,6136,6116,6094,6073,6050,6027,6003,5979,5953,5928,5901,5874,5846,5817,5788,5758,5728,5696,5665,5632,5599,5566,5532,5497,5462,5426,5390,5353,5315,5277,5239,5200,5160,5121,5080,5039,4998,4956,4914,4871,4828,4785,4741,4697,4652,4607,4562,4516,4470,4424,4377,4330,4283,4236,4188,4140,4092,4044,3995,3946,3897,3848,3799,3750,3700,3650,3601,3551,3501,3451,3400,3350,3300,3250,3200,3149,3099,3049,2999,2948,2898,2848,2798,2749,2699,2649,2600,2551,2502,2453,2404,2355,2307,2259,2211,2163,2116,2069,2022,1975,1929,1883,1837,1792,1747,1702,1658,1614,1571,1528,1485,1443,1401,1360,1319,1278,1239,1199,1160,1122,1084,1046,1009,973,937,902,867,833,800,767,734,703,671,641,611,582,553,525,498,471,446,420,396,372,349,326,305,283,263,244,225,207,189,172,157,141,127,113,101,88,77,66,57,48,39,32,25,19,14,10,6,4,2,0,0,0,2,4,6,10,14,19,25,32,39,48,57,66,77,88,101,113,127,141,157,172,189,207,225,244,263,283,305,326,349,372,396,420,446,471,498,525,553,582,611,641,671,703,734,767,800,833,867,902,937,973,1009,1046,1084,1122,1160,1199,1239,1278,1319,1360,1401,1443,1485,1528,1571,1614,1658,1702,1747,1792,1837,1883,1929,1975,2022,2069,2116,2163,2211,2259,2307,2355,2404,2453,2502,2551,2600,2649,2699,2749,2798,2848,2898,2948,2999,3049,3099,3149
