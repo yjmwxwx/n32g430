@@ -338,8 +338,7 @@ __lcd_chushihua:
 
 	
 	bl __lcd_qingping
-
-
+	
 __ting:
 	ldr r0, = zhenfu
 	ldr r0, [r0]
@@ -374,11 +373,11 @@ __ting:
 	
 __tiao_zhenfu:
 	bl __an_jian
-	cmp r0, # 0
-	beq __tiao_jiaodu
-	cmp r0, # 1
-	beq __zhenfu_jia
+	cmp r0, # 3
+	beq __tiao_jiaodu	
 	cmp r0, # 2
+	beq __zhenfu_jia
+	cmp r0, # 1
 	beq __zhenfu_jian
 	b __xianshi_zhenfu
 __zhenfu_jia:
@@ -419,11 +418,11 @@ __xianshi_zhenfu:
 
 __tiao_jiaodu:
 	bl __an_jian
-	cmp r0, # 0
+	cmp r0, # 3
 	beq __tiao_zhenfu
-	cmp r0, # 1
-	beq __jiaodu_jia
 	cmp r0, # 2
+	beq __jiaodu_jia
+	cmp r0, # 1
 	beq __jiaodu_jian
 	b __xianshi_jiaodu
 __jiaodu_jia:
@@ -460,7 +459,6 @@ __xianshi_jiaodu:
 	bl __xie_lcd_ascii
 	b __tiao_jiaodu
 	
-
 
 adc:
 	ldr r0, = 0x40020800
