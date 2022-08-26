@@ -1,9 +1,0 @@
-dianya=峰值电压√2×9
-dianya1=直流电压9
-
-jiaodu = 0:1:90
-dianya=30
-dianya1=21
-x = ((dianya1 * sind(jiaodu)) * (dianya * cosd(0)) - (dianya1 * cosd(jiaodu))  * (dianya * sind(0)))/ ((dianya * sind(90)) * (dianya * cosd(0)) - (dianya * cosd(90)) * (dianya * sind(0)))
-y = ((dianya1 * cosd(jiaodu)) - (x *(dianya * cosd(90)))) / (dianya * cosd(0))
-plot (x,y)
