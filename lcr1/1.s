@@ -227,7 +227,7 @@ __dma_chushihua:
 	str r1, [r0, # 0x14]
 	ldr r1, = 6400			@采样数量	sl
 	str r1, [r0, # 0x0c]
-	movw r1, # 0x3581 			@0x3581(单次)，0x35a1(循环) 
+	movw r1, # 0x35a1 			@0x3581(单次)，0x35a1(循环) 
 	str r1, [r0, # 0x08]
 
         ldr r0, = 0x40020014
@@ -273,7 +273,7 @@ __deng_adc_zhunbeihao:
 	ldr r1, = lvbo_youyi
 	movs r2, # 100
 	str r2, [r0]
-	movs r2, # 10
+	movs r2, # 15
 	str r2, [r1]
 	
         ldr r0, = 0xe000e010
@@ -2262,16 +2262,16 @@ __systick_zhongduan:				@syzd
 	cmp r1, # 2
 	beq __suan_dft
 __kai_dma:	
-	ldr r0, = 0x40020000
-	ldr r1, [r0]
-	lsls r1, r1, # 30
-	bpl __kai_dma
-	movw r1, # 6400
-	str r1, [r0, # 0x0c]
-	movs r1, # 0x0f
-	str r1, [r0, # 0x04]
-	movw r1, # 0x3581
-	str r1, [r0, # 0x08]
+@	ldr r0, = 0x40020000
+@	ldr r1, [r0]
+@	lsls r1, r1, # 30
+@	bpl __kai_dma
+@	movw r1, # 6400
+@	str r1, [r0, # 0x0c]
+@	movs r1, # 0x0f
+@	str r1, [r0, # 0x04]
+@	movw r1, # 0x3581
+@	str r1, [r0, # 0x08]
 	b __systick_fanhui
 
 __suan_dft:
@@ -2311,6 +2311,7 @@ __qiehuan_shangbi:
 	bl __lv_bo_qi
 	ldr r2, = xiabi_r
 	str r0, [r2]
+	b __systick_fanhui
 __qiehuan_xiabi:
 	movs r1, # 0
 	str r1, [r0]
