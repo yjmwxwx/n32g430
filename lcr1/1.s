@@ -35,7 +35,7 @@ vectors:					@向量表
 	.word aaa +1 @8 _exti2 +1
 	.word aaa +1 @9 _exti3 +1
 	.word aaa +1 @10 _exti4 +1
-	.word aaa +1 @11 _dma_channel1 +1
+	.word _dma_channel1 +1
 	.word aaa +1 @12 _dma_channel2 +1
 	.word aaa +1 @13 _dma_channel3 +1
 	.word aaa +1 @14 _dma_channel4 +1
@@ -78,6 +78,9 @@ vectors:					@向量表
 	.word aaa +1 @51 _can_rx1 +1
 	.word aaa +1 @52 _can_sce +1
 _start:
+	ldr r0, = 0xe000ed88
+	ldr r1, = 0x00f00000
+	str r1, [r0]		@开FPU协处理器
 __shizhong:
 	ldr r2, = 0x40022000   @FLASH访问控制
 	movs r1, # 0x33
@@ -133,7 +136,7 @@ _waishezhongduan:			@外设中断
 	@0XE000E200    0-31 挂起，写0没效
 	@0XE000E280    0-31 清除， 写0没效
 @	ldr r0, =  0xe000e100
-@	ldr r1, = 0x20000000	@tim4
+@	ldr r1, = 0x800	@tim4
 @	str r1, [r0]
 
 _neicunqingling:
@@ -225,7 +228,7 @@ __dma_chushihua:
 	str r1, [r0, # 0x10]
 	ldr r1, = dianyabiao
 	str r1, [r0, # 0x14]
-	ldr r1, = 6400			@采样数量	sl
+	ldr r1, = 4000			@采样数量	sl
 	str r1, [r0, # 0x0c]
 	movw r1, # 0x35a1 			@0x3581(单次)，0x35a1(循环) 
 	str r1, [r0, # 0x08]
@@ -235,7 +238,7 @@ __dma_chushihua:
 	str r1, [r0, # 0x08]
 	ldr r1, = 0x40012c34
 	str r1, [r0, # 0x10]
-	ldr r1, = 0x20000100 @zhengxian_100khz
+	ldr r1, = zhengxian_100khz
 	str r1, [r0, # 0x14]
 	ldr r1, = 40
 	str r1, [r0, # 0x0c]
@@ -263,7 +266,7 @@ __deng_adc_zhunbeihao:
 	str r1, [r0, # 0x34]  		
 @	movw r1, # 0x100
 @	str r1, [r0, # 0x04]		@通道循环采
-	ldr r1, = 0x180101 		@0x180101
+	ldr r1, = 0x180101	@0X100101  @0x180101
 	str r1, [r0, # 0x08]
         str r1, [r0, # 0x08]		@为啥还要开两次。。。
 
@@ -273,22 +276,22 @@ __deng_adc_zhunbeihao:
 	ldr r1, = lvbo_youyi
 	movs r2, # 100
 	str r2, [r0]
-	movs r2, # 15
+	movs r2, # 13
 	str r2, [r1]
 	
-        ldr r0, = 0xe000e010
-	ldr r1, = 127999
-	str r1, [r0, # 4]
-	str r1, [r0, # 8]
-	movs r1, # 0x07
-	str r1, [r0]    @systick 开
+ @       ldr r0, = 0xe000e010
+@	ldr r1, = 127999
+@	str r1, [r0, # 4]
+@	str r1, [r0, # 8]
+@	movs r1, # 0x07
+@	str r1, [r0]    @systick 开
 
-
+	
 __tim3chushihua:
 	ldr r3, = 0x40000400 @ tim3_cr1
 	ldr r2, = 0
 	str r2, [r3, # 0x28] @ psc
-	ldr r2, = 19                    @639=200KHZ
+	ldr r2, = 31                  @639=200KHZ
 	str r2, [r3, # 0x2c] @ ARR
 	movs r2, # 0x20
 	str r2, [r3, # 0x04] @ TRGO
@@ -301,6 +304,8 @@ __tim1_chushiha:
 	str r5, [r4, # 0x28] @ psc
 	ldr r5, = 31
 	str r5, [r4, # 0x2c] @ ARR
+@	movs r2, # 0x20
+@	str r2, [r4, # 0x04]	 @TRGO
 	movw r5, # 0x200
 	str r5, [r4, # 0x0c]
 	movs r5, # 0x68
@@ -365,9 +370,181 @@ __lcd_chushihua:
 	
 	bl __lcd_qingping
 
+		
 	
 ting:
+
+__qiehuan_shangbi1:
+	ldr r0, = 0x40023800
+	movs r1, # 1
+	lsls r1, r1, # 16
+	str r1, [r0, # 0x18]
+
+	ldr r0, = 100000
+y:
+	subs r0, r0, # 1
+	bne y
+	
+	ldr r0, = cos_sin
+	ldr r1, = cos_sin_100khz1
+	ldr r2, = dft_shuliang
+	str r1, [r0]
+	movs r1, # 25
+	str r1, [r2]
+	bl __dft_jisuan1
+	mvns r0, r0
+	adds r0, r0, # 1
+	mvns r1, r1
+	adds r1, r1, # 1
+	push {r0-r1}
+	
+	mov r4, r0
+	ldr r2, = lvboqizhizhen2
+	ldr r0, =lvboqihuanchong2
+	bl __lv_bo_qi
+	ldr r2, = shangbi_i
+	str r0, [r2]
+
+	mov r1, r4
+	ldr r2, = lvboqizhizhen3
+	ldr r0, =lvboqihuanchong3
+	bl __lv_bo_qi
+	ldr r2, = shangbi_r
+	str r0, [r2]
+	
+__qiehuan_xiabi1:
+	ldr r0, = 0x40023800
+	movs r1, # 1
+	str r1, [r0, # 0x18]
+	ldr r0, = 100000
+y1:	
+	subs r0, r0, # 1
+	bne y1
+	ldr r0, = cos_sin
+	ldr r1, = cos_sin_100khz1
+	ldr r2, = dft_shuliang
+	str r1, [r0]
+	movs r1, # 25
+	str r1, [r2]
+	bl __dft_jisuan1
+	push {r0-r1}
+	mov r4, r0
+	ldr r2, = lvboqizhizhen
+	ldr r0, =lvboqihuanchong
+	bl __lv_bo_qi
+	ldr r2, = xiabi_i
+	str r0, [r2]
+
+	mov r1, r4
+	ldr r2, = lvboqizhizhen1
+	ldr r0, =lvboqihuanchong1
+	bl __lv_bo_qi
+	ldr r2, = xiabi_r
+	str r0, [r2]
+
+	bl __jisuan_zukang
+	
+	pop {r0-r3}
+	asrs r0, r0, # 8
+	asrs r1, r1, # 8
+	asrs r2, r2, # 8
+	asrs r3, r3, # 8
+	ldr r4, = xiabi_rr
+	str r0, [r4]
+	str r1, [r4, # 0x04]
+	str r2, [r4, # 0x08]
+	str r3, [r4, # 0x0c]
+	bl __jisuan_z_fudu
+	mov r6, r0
+
+	ldr r0, = shangbi_r
+	ldr r1, = shangbi_i
+	ldr r2, = xiabi_r
+	ldr r3, = xiabi_i
+	ldr r0, [r0]
+	ldr r1, [r1]
+	ldr r2, [r2]
+	ldr r3, [r3]
+	asrs r0, r0, # 3
+	asrs r1, r1, # 3
+	asrs r2, r2, # 3
+	asrs r3, r3, # 3
+	bl __jisuan_z_fudu
+	mov r1, r0
+	subs r0, r0, r6
+	bpl __kuaiman_jiance
+	subs r0, r6, r1
+__kuaiman_jiance:
+	cmp r0, # 20
+	bhi __kuaisu
+	b __mansu
+
+__mansu:
+	
+
 	bl __xianshi_shangxia_bi
+
+
+	bl __jisuan_zukang
+	bl __xianshi_zukang
+	b ting
+	
+	
+	
+	@	ldr r0, = 0x20000200
+	@	ldrh r0, [r0]
+	mov r0, r1
+	movs r1, # 6
+	ldr r2, = asciibiao
+	movs r3, # 0xff            @小数点位置
+	bl _zhuanascii
+	movs r0, # 6            @写几个字
+	movs r1, # 48           @字库单字长度
+	movs r2, # 3            @宽度
+	movw r3, # 0x1102              @lcd位置
+	bl __xie_lcd_ascii
+	b ting
+__kuaisu:
+	ldr r0, = shangbi_rr
+	ldr r1, = shangbi_ii
+	ldr r2, = xiabi_rr
+	ldr r3, = xiabi_ii
+	ldr r0, [r0]
+	ldr r1, [r1]
+	ldr r2, [r2]
+	ldr r3, [r3]
+	ldr r4, = shangbi_r
+	ldr r5, = shangbi_i
+	ldr r6, = xiabi_r
+	ldr r7, = xiabi_i
+	str r0, [r4]
+	str r1, [r5]
+	str r2, [r6]
+	str r3, [r7]
+
+	bl __xianshi_shangxia_bi
+	bl __jisuan_zukang
+	bl __xianshi_zukang
+	b ting
+
+
+
+
+	
+	mov r0, r6
+        movs r1, # 6
+	ldr r2, = asciibiao
+	movs r3, # 0xff            @小数点位置
+	bl _zhuanascii
+	movs r0, # 6            @写几个字
+	movs r1, # 48           @字库单字长度
+	movs r2, # 3            @宽度
+	movw r3, # 0x1102              @lcd位置
+	bl __xie_lcd_ascii
+	b ting
+	
+	bl __jisuan_zukang
+	bl __xianshi_zukang
 	b ting
 
 	ldr r0, = 0x40020800
@@ -405,7 +582,7 @@ __xiabi_kai:
 	b ting
 __shangbi_kai:	
 	movs r1, # 1
-	lsls r1, r1, # 16
+@	lsls r1, r1, # 16
 	str r1, [r0, # 0x18]
 	b ting
 	
@@ -421,7 +598,164 @@ __shangbi_kai:
 	str r1, [r3]
 	b ting
 
+__xianshi_zukang:
+	push {r0-r6,lr}
+        ldr r0, = z_r
+	ldr r1, = z_i
+	ldr r0, [r0]
+	ldr r5, [r1]
+	movs r6, r0
+	bmi __z_r_shi_fu
+__z_r_bushi_fu:
+	ldr r0, = kong
+	movs r1, # 1           @显示几个字符
+	movw r2, # 0x00         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	b __xianshi_z_r
+__z_r_shi_fu:
+	ldr r0, = fu
+	movs r1, # 1           @显示几个字符
+	movw r2, # 0x00         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	mvns r6, r6
+	adds r6, r6, # 1
+__xianshi_z_r:
+	mov r0, r6
+        movs r1, # 6
+	ldr r2, = asciibiao
+	movs r3, # 3            @小数点位置
+	bl _zhuanascii
+	movs r0, # 6            @写几个字
+	movs r1, # 48           @字库单字长度
+	movs r2, # 3            @宽度
+	movw r3, # 0x1102              @lcd位置
+	bl __xie_lcd_ascii
+	
 
+	movs r6, r5
+	bmi __z_i_shi_fu
+__z_i_bushi_fu:
+	ldr r0, = kong
+	movs r1, # 1           @显示几个字符
+	movw r2, # 0x4200         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	b __xianshi_z_i
+__z_i_shi_fu:
+	ldr r0, = fu
+	movs r1, # 1           @显示几个字符
+	movw r2, # 0x4200         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	mvns r6, r6
+	adds r6, r6, # 1
+__xianshi_z_i:
+	mov r0, r6
+        movs r1, # 6
+	ldr r2, = asciibiao
+	movs r3, # 3            @小数点位置
+	bl _zhuanascii
+	movs r0, # 6            @写几个字
+	movs r1, # 48           @字库单字长度
+	movs r2, # 3            @宽度
+	movw r3, # 0x1105              @lcd位置
+	bl __xie_lcd_ascii
+	pop {r0-r6,pc}
+	
+
+__jisuan_z_fudu:
+	@入口R0=a，R1=b，R2=c，R3=d
+	push {r4,lr}
+	bl __ji_suan_fu_du
+	mov r4, r0
+	mov r0, r2
+	mov r1, r3
+	bl __ji_suan_fu_du
+	ldr r2, = 1000
+	muls r4, r4, r2
+	udiv r0, r4, r0
+	pop {r4,pc}
+	
+__jisuan_zukang:
+	push {r0-r4,r6-r7,lr}
+@	ldr r0, = zukang_dianzu_biao
+@	ldr r1, = liangcheng
+@	ldr r1, [r1]
+@	lsls r1, r1, # 2
+	@	ldr r4, [r0, r1]
+	ldr r4, = 10000
+	
+	ldr r0, = shangbi_r
+	ldr r1, = shangbi_i
+	ldr r2, = xiabi_r
+	ldr r3, = xiabi_i
+	ldr r0, [r0]
+	ldr r1, [r1]
+	ldr r2, [r2]
+	ldr r3, [r3]
+	lsls r0, r0, # 10
+	lsls r1, r1, # 10
+	lsls r2, r2, # 10
+	lsls r3, r3, # 10
+	bl __fushu_chufa
+	mov r6, r0
+	mov r7, r1
+	mov r3, r1
+	mov r1, r4
+	movs r2, # 0
+	movs r0, r0
+	bpl __z_r_cheng_dianzu
+	movs r2, # 1
+	mvns r0, r0
+	adds r0, r0, # 1
+__z_r_cheng_dianzu:
+	bl __chengfa
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r1, r1, r0
+	cmp r2, # 1
+	bne __z_i_jiance
+	mvns r1, r1
+	adds r1, r1, # 1
+__z_i_jiance:
+	mov r0, r3
+	mov r3, r1
+	mov r1, r4
+	movs r2, # 0
+	movs r0, r0
+	bpl __z_i_cheng_dianzu
+	movs r2, # 1
+	mvns r0, r0
+	adds r0, r0, # 1
+__z_i_cheng_dianzu:
+	bl __chengfa
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r0, r0, r1
+	cmp r2, # 1
+	bne __jisuan_zukang_fanhui
+	mvns r0, r0
+	adds r0, r0, # 1
+__jisuan_zukang_fanhui:
+	mov r1, r3
+	ldr r2, = z_r
+	ldr r3, = z_i
+	str r1, [r2]
+	str r0, [r3]
+	mov r0, r6
+	mov r1, r7
+	bl __suan_atan2
+	movs r1, # 100
+	muls r0, r0, r1
+	asrs r0, r0, # 15
+	ldr r3, = 18000
+	cmp r0, r3
+	bls __bao
+	ldr r3, = 36000
+	subs r0, r0, r3
+__bao:
+	ldr r2, = z_jiao_du
+	str r0, [r2]
+	pop {r0-r4,r6-r7,pc}
+	
 __lv_bo_qi:
 	@地址顺序：指针，累加值，缓冲区
 	@入口R0=缓冲区，R1=数据, r2,=指针
@@ -658,7 +992,1447 @@ __lcd_xianshi_shuju_shiyan:
 	bl __xie_ascii
 	bx lr
 	.ltorg
-				
+
+	
+__dft_jisuan1:	 
+	@出口R0=实部，R1=虚部
+	push {r2-r12,lr}
+	ldr r0, = sp_zhizhen
+	str sp, [r0]
+	ldr sp, = cos_sin
+	ldr sp, [sp]
+	ldr r12, = dianyabiao          @dianyabiao
+	movs r10, # 0
+	movs r11, # 0
+__dft_xunhuan1:
+	@0 (4 ge)
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@1
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@2
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@3
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@4
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@5
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@6
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@7
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@8
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@9
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+
+	@0 (4 ge)
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@1
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@2
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@3
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@4
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@5
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@6
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@7
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@8
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@9
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+
+
+	@0 (4 ge)
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@1
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@2
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@3
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@4
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@5
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@6
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@7
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@8
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@9
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+
+
+	@0 (4 ge)
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@1
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@2
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@3
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@4
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@5
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@6
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@7
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@8
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+	@9
+	pop {r2-r9}
+	ldmia r12!, {r0-r1}
+	mov lr, r0
+	lsrs lr, lr, # 16
+	lsls r0, r0, # 16
+	lsrs r0, r0, # 16
+	mul r2, r2, lr
+	mul r3, r3, lr
+	mul r4, r4, r0
+	mul r5, r5, r0
+	mov lr, r1
+	lsrs lr, lr, # 16
+	lsls r1, r1, # 16
+	lsrs r1, r1, # 16
+	mul r6, r6, lr
+	mul r7, r7, lr
+	mul r8, r8, r1
+	mul r9, r9, r1
+	asrs r2, r2, # 13
+	asrs r3, r3, # 13
+	asrs r4, r4, # 13
+	asrs r5, r5, # 13
+	asrs r6, r6, # 13
+	asrs r7, r7, # 13
+	asrs r8, r8, # 13
+	asrs r9, r9, # 13
+	add r10, r10, r2
+	add r10, r10, r4
+	add r10, r10, r6
+	add r10, r10, r8
+	add r11, r11, r3
+	add r11, r11, r5
+	add r11, r11, r7
+	add r11, r11, r9
+
+
+
+
+
+	ldr sp, = cos_sin
+	ldr sp, [sp]
+	ldr r0, = dft_shuliang
+	ldr r1, [r0]
+	subs r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 0
+	bne __dft_xunhuan1
+
+
+	mov r0, r10
+	mov r1, r11
+	ldr r2, = sp_zhizhen
+	ldr sp, [r2]
+	pop {r2-r12,pc}
+	
+	.ltorg
+	
 
 __dft_jisuan:	@0.86毫秒6400点
 	@出口R0=实部，R1=虚部
@@ -2204,6 +3978,259 @@ ___suan_atan2:
 	movs r2, # 0
 	mov r3, r2
 	movs r0, r0
+	bpl ___panduan_xubu
+	ldr r2, = 5898240
+	mvns r0, r0
+	mvns r1, r1
+	adds r0, r0, # 1
+	adds r1, r1, # 1
+___panduan_xubu:
+	movs r1, r1
+	bpl __suan_atan2_xunhuan
+	ldr r2, = 11796480
+___suan_atan2_xunhuan:
+	movs r1, r1
+	bpl ___atan2_zhengzhuan
+	mov r4, r0	@x
+	mov r5, r1	@y
+	asrs r5, r5, r3
+	asrs r4, r4, r3
+	subs r0, r0, r5
+	adds r1, r1, r4
+	mov r4, r3
+	lsls r4, r4, # 2
+	ldr r4, [r6, r4]
+	subs r2, r2, r4
+	b ___atan2_xuanzhuan
+___atan2_zhengzhuan:
+	mov r4, r0	@x
+	mov r5, r1	@y
+	asrs r5, r5, r3
+	asrs r4, r4, r3
+	adds r0, r0, r5
+	subs r1, r1, r4
+	mov r4, r3
+	lsls r4, r4, # 2
+	ldr r4, [r6, r4]
+	adds r2, r2, r4
+___atan2_xuanzhuan:
+	adds r3, r3, # 1
+	cmp r3, # 21
+	bne ___suan_atan2_xunhuan
+	mov r1, r0
+	mov r0,r2
+	pop {r2-r6,pc}
+
+__chengfa:
+	@入R0 乘以 R1
+	@出 R0高32 ， R1低32
+	@0xffffffff*0xffffffff
+	@4        F F F E 0 0 0 1                       @4
+	@3                F F F E 0 0 0 1               @3
+	@2                F F F E 0 0 0 1               @2
+	@1                        F F F E 0 0 0 1       @1
+	@         F F F F F F F E 0 0 0 0 0 0 0 1
+	push {r2-r7,lr}
+	cmp r0, # 0
+	beq __cheng_fa_fan_hui
+	cmp r1, # 0
+	beq __cheng_fa_fan_hui
+__ji_suan_cheng_fa:
+	mov r2, r0
+	mov r3, r1
+	lsrs r0, r0, # 16       @高16
+	lsls r2, r2, # 16       @ 低16
+	lsrs r2, r2, # 16
+	lsrs r1, r1, # 16       @高16
+	lsls r3, r3, # 16       @低16
+	lsrs r3, r3, # 16
+	mov r4, r2
+	mov r5, r0
+	muls r2, r2, r3         @1
+	muls r0, r0, r3         @2
+	muls r4, r4, r1         @3
+	muls r5, r5, r1         @4
+	mov r6, r0
+	mov r7, r4
+	lsls r0, r0, # 16       @2低32
+	lsls r4, r4, # 16       @3低32
+	lsrs r6, r6, # 16       @2高32
+	lsrs r7, r7, # 16       @3高32
+	movs r1, # 0
+	adds r2, r2, r0         @低32
+	adcs r6, r6, r1         @高32
+	adds r2, r2, r4
+	adcs r6, r6, r7
+	adds r6, r6, r5
+	mov r0, r6
+	mov r1, r2
+	pop {r2-r7,pc}
+__cheng_fa_fan_hui:
+	movs r0, # 0
+	movs r1, # 0
+	pop {r2-r7,pc}
+
+__ji_suan_fu_du:		    @ 计算幅度
+	@ 入r0= 实部，r1= 虚部
+	@ 出r0 = 幅度
+	@ Mag ~=Alpha * max(|I|, |Q|) + Beta * min(|I|, |Q|)
+	@ Alpha * Max + Beta * Min
+	push {r1-r4,lr}
+	movs r0, r0
+	bpl _shibubushifushu
+	mvns r0, r0                             @ 是负数转成正数
+	adds r0, r0, # 1
+_shibubushifushu:		                               @ 实部不是负数
+	movs r1, r1
+	bpl _xububushifushu
+	mvns r1, r1                             @ 是负数转成正数
+	adds r1, r1, # 1
+_xububushifushu:		                                @ 虚部不是负数
+	cmp r0, # 0
+	bne _panduanxubushibushi0
+	mov r0, r1
+	pop {r1-r4,pc}
+_panduanxubushibushi0:
+	cmp r1, # 0
+	bne _jisuanfudu1
+	pop {r1-r4,pc}
+_jisuanfudu1:
+	ldr r2, = 31066		@ Alpha q15 0.948059448969 @
+	ldr r3, = 12868		@ Beta q15 0.392699081699
+	cmp r1, r0
+	bhi _alpha_min_beta_max
+_alpha_max_beta_min:
+	mov r4, r1
+	mov r1, r2
+	bl __chengfa
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r0, r0, r1
+	mov r2, r0
+
+	mov r0, r3
+	mov r1, r4
+	bl __chengfa
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r1, r1, r0
+	mov r0, r2
+
+	@	muls r0, r0, r2
+	@	muls r1, r1, r3
+	@	asrs r0, r0, # 15
+	@	asrs r1, r1, # 15
+	adds r0, r0, r1
+	movs r1, # 1
+	pop {r1-r4,pc}
+_alpha_min_beta_max:
+	mov r4, r1
+	mov r1, r3
+	bl __chengfa
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r0, r0, r1
+	mov r3, r0
+
+	mov r0, r2
+	mov r1, r4
+	bl __chengfa
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r1, r1, r0
+	mov r0, r3
+
+	@	muls r0, r0, r3
+	@	muls r1, r1, r2
+	@	asrs r0, r0, # 15
+	@	asrs r1, r1, # 15
+	adds r0, r0, r1
+	movs r1, # 0
+	pop {r1-r4,pc}
+
+	.ltorg
+__suan_cos_sin:
+	@入口R0=0*32768到360*32768
+	@出口R0=COS，R1=SIN
+	@增益 32768*0.6072529350088812561694
+	push {r2-r7,lr}
+	ldr r1, = 0x4dba
+	ldr r2, = 2949120	@90
+	ldr r3, = 8847360	@270
+	ldr r7, = atan_biao
+	movs r5, # 0
+	mov r6, r5
+	cmp r0, r2
+	bhi __dayu_90
+	movs r4, # 0
+	b __suan_cos_sin_xunhuan
+__dayu_90:
+	cmp r0, r3
+	bhi __dayu_270
+	ldr r4, = 5898240	@180
+	b __suan_cos_sin_xunhuan
+__dayu_270:
+	ldr r4, = 11796480 	@360
+__suan_cos_sin_xunhuan:
+	mov r3, r4
+	mov r2, r0
+	subs r2, r2, r3
+	bmi __zhengzhuan
+__fanzhuan:
+	mov r3, r6
+	mov r2, r1
+	asrs r6, r6, r5
+	subs r2, r2, r6	@x
+	asrs r1, r1, r5
+	mov r6, r5
+	lsls r6, r6, # 2
+	ldr r6, [r7, r6]
+	adds r3, r3, r1	@y
+	adds r4, r4, r6	@jiaodu
+	b __cordic_xuanzhuan
+__zhengzhuan:
+	mov r3, r6
+	mov r2, r1
+	asrs r6, r6, r5
+	adds r2, r2, r6	@x
+	asrs r1, r1, r5
+	mov r6, r5
+	lsls r6, r6, # 2
+	ldr r6, [r7, r6]
+	subs r3, r3, r1	@y
+	subs r4, r4, r6	@jiaodu
+__cordic_xuanzhuan:
+	mov r1, r2
+	mov r6, r3
+	adds r5, r5, # 1
+	cmp r5, # 21
+	bne __suan_cos_sin_xunhuan
+	ldr r6, = 2949120	@90
+	ldr r7, = 8847360      @270
+	cmp r0, r6
+	bls __suan_cos_sin_fanhui
+	cmp r0, r7
+	bcs __suan_cos_sin_fanhui
+	mvns r2, r2
+	mvns r3, r3
+	adds r2, r2, # 1
+	adds r3, r3, # 1
+__suan_cos_sin_fanhui:
+	mov r1, r3
+	mov r0, r2
+	pop {r2-r7,pc}
+	.ltorg
+
+
+	
+__suan_atan2:
+	@入口R0=实部，R1=虚部
+	@出口R0=角度
+	push {r2-r6,lr}
+	ldr r6, = atan_biao
+	movs r2, # 0
+	mov r3, r2
+	movs r0, r0
 	bpl __panduan_xubu
 	ldr r2, = 5898240
 	mvns r0, r0
@@ -2246,6 +4273,157 @@ __atan2_xuanzhuan:
 	mov r1, r0
 	mov r0,r2
 	pop {r2-r6,pc}
+	.ltorg
+	
+__fushu_chufa:
+	@入口R0=Z1_R, R1=Z1_I,R2=Z2_R,R3=Z2_I
+	@出口R0=Z_R,R1=Z_I
+	push {r4-r7,lr}
+	mov r6, r0
+	mov r7, r1
+	@	lsls r0, r0, # 15
+	@	lsls r1, r1, # 15
+	bl __suan_atan2
+	mov r5, r0
+	mov r0, r2
+	mov r1, r3
+	@	lsls r0, r0, # 15
+	@	lsls r1, r1, # 15
+	bl __suan_atan2
+	@	bkpt # 0
+	mov r1, r5
+	subs r0, r1, r0 @算角度差
+	bpl __suan_shangxiabi_fudu
+	ldr r1, = 11796480      @360*32768
+	adds r0, r0, r1
+__suan_shangxiabi_fudu:
+	mov r5, r0      @保存角度差
+	@	bkpt # 1
+	mov r0, r2
+	mov r1, r3
+	bl __ji_suan_fu_du
+	@	bkpt # 2
+	mov r2, r0
+	mov r0, r6      @上臂R
+	mov r1, r7      @上臂I
+	bl __ji_suan_fu_du
+	@	bkpt # 3
+	mov r1, r0
+	lsrs r0, r0, # 17
+	lsls r1, r1, # 15
+	bl __chufa64
+	mov r3, r1      @Z幅度
+	@	bkpt # 4
+	mov r0, r5
+	bl __suan_cos_sin
+	@	bkpt # 4
+	mov r4, r1
+	mov r1, r3
+	movs r2, # 0
+	movs r0, r0
+	bpl cl1
+	adds r2, r2, # 1
+	mvns r0, r0
+	adds r0, r0, # 1
+cl1:
+	movs r1, r1
+	bpl cl2
+	adds r2, r2, # 1
+	mvns r1, r1
+	adds r1, r1, # 1
+cl2:
+	bl __chengfa
+	@	bkpt # 5
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r1, r1, r0
+	cmp r2, # 1
+	bne __suan_xubu
+	mvns r1, r1
+	adds r1, r1, # 1
+__suan_xubu:
+	mov r0, r4
+	mov r4, r1      @实部
+	mov r1, r3
+	movs r2, # 0
+	movs r0, r0
+	bpl cl3
+	adds r2, r2, # 1
+	mvns r0, r0
+	adds r0, r0, # 1
+cl3:
+	movs r1, r1
+	bpl cl4
+	adds r2, r2, # 1
+	mvns r1, r1
+	adds r1, r1, # 1
+cl4:
+	bl __chengfa
+	@	bkpt #6
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r1, r1, r0
+	cmp r2, # 1
+	bne cl5
+	mvns r1, r1
+	adds r1, r1, # 1
+cl5:
+	mov r0, r4
+	@有问题，ZR是负数输出ZI符号也会有问题
+	movs r0, r0
+	bpl __zr_bushifu
+	mvns r0, r0
+	mvns r1, r1
+	adds r0, r0, # 1
+	adds r1, r1, # 1
+__zr_bushifu:
+	pop {r4-r7,pc}
+
+	
+__chufa64:
+	@64位除32位
+	@ （R0=高32位R1=低32位）除（R2)= （R0高32）（R1低32）
+	push {r3-r7,lr}
+	cmp r2, # 0
+	beq __chu_fa64_fan_hui0
+	cmp r1, # 0
+	bne __chu_fa64_ji_suan
+	cmp r0, # 0
+	beq __chu_fa64_fan_hui0
+__chu_fa64_ji_suan:
+	movs r4, # 0
+	mov r7, r4
+	mov r3, r4
+	mov r5, r4
+	movs r6, # 1
+	lsls r6, r6, # 31
+__chu_fa64_xun_huan:
+	lsls r1, r1, # 1
+	adcs r0, r0, r0
+	adcs r4, r4, r4
+	cmp r4, r2
+	bcc __chu_fa_yi_wei
+	adds r3, r3, r6
+	adcs r5, r5, r7
+	subs r4, r4, r2
+__chu_fa_yi_wei:
+	movs r6, r6
+	beq __di_yi_wei
+	lsrs r6, r6, # 1        @高32位移位
+	bne __chu_fa64_xun_huan
+	movs r7, # 1
+	lsls r7, r7, # 31
+	b __chu_fa64_xun_huan
+__di_yi_wei:		            @低32位移位
+	lsrs r7, r7, # 1
+	bne __chu_fa64_xun_huan
+	mov r0, r3
+	mov r1, r5
+	pop {r3-r7,pc}
+__chu_fa64_fan_hui0:
+	movs r0, # 0
+	movs r1, # 0
+	pop {r3-r7,pc}
 _nmi_handler:	
 _hard_fault:	
 _memory_fault:	
@@ -2261,7 +4439,15 @@ __systick_zhongduan:				@syzd
 	str r1, [r0]
 	cmp r1, # 2
 	beq __suan_dft
-__kai_dma:	
+__kai_dma:
+        ldr r0, = 0x40020000
+	movs r1, # 0x0f
+	str r1, [r0, # 0x04]
+	ldr r1, = 4000                  @采样数量       sl
+	str r1, [r0, # 0x0c]
+	movw r1, # 0x3581                       @0x3581(单次)，0x35a1(循环)
+	str r1, [r0, # 0x08]
+	
 @	ldr r0, = 0x40020000
 @	ldr r1, [r0]
 @	lsls r1, r1, # 30
@@ -2273,10 +4459,18 @@ __kai_dma:
 @	movw r1, # 0x3581
 @	str r1, [r0, # 0x08]
 	b __systick_fanhui
-
 __suan_dft:
-	movs r1, # 0
+	@movs r1, # 0
+	@str r1, [r0]
+        ldr r0, = cos_sin
+	ldr r1, = cos_sin_100khz
+	ldr r2, = dft_shuliang
 	str r1, [r0]
+	movs r1, # 50
+	str r1, [r2]
+	bl __dft_jisuan
+	b __suan_dft
+	b __systick_fanhui
 __deng_dma_wan:
 	ldr r0, = shangxiabi_qiehuan
 	ldr r1, [r0]
@@ -2298,6 +4492,10 @@ __qiehuan_shangbi:
 	movs r1, # 50
 	str r1, [r2]
 	bl __dft_jisuan
+	mvns r0, r0
+	adds r0, r0, # 1
+	mvns r1, r1
+	adds r1, r1, # 1
 	mov r4, r0
 	ldr r2, = lvboqizhizhen2
 	ldr r0, =lvboqihuanchong2
@@ -2345,11 +4543,32 @@ __systick_fanhui:
 	ldr r1, = 0x02000000
 	str r1, [r0]                 @ 清除SYSTICK中断
 	pop {r0-r12,pc}
+_dma_channel1:
+	push {r0-r12,lr}
+	ldr r0, = 0x40020000
+	movs r1, # 0x0f
+	str r1, [r0, # 0x04]
+	ldr r1, = 6400                  @采样数量       sl
+	str r1, [r0, # 0x0c]
+	movw r1, # 0x3583                       @0x3581(单次)，0x35a1(循环)
+	str r1, [r0, # 0x08]
+	b __suan_dft
 
+
+
+	
 	.ltorg
 	.section .data
 	.equ STACHINIT,         	0x20004000      @堆栈顶
 	.equ asciibiao,			0x20000000	@ASCII表
+	.equ z_fudu,			0x200001a4
+	.equ xiabi_rr,			0x200001a8
+	.equ xiabi_ii,			0x200001ac
+	.equ shangbi_rr,		0x200001b0
+	.equ shangbi_ii,		0x200001b4
+	.equ z_jiao_du,			0x200001b8
+	.equ z_r,			0x200001bc
+	.equ z_i,			0x200001c0
 	.equ shangxiabi_qiehuan,	0x200001c4
 	.equ lvbo_youyi,		0x200001d8
 	.equ lvbo_changdu,		0x200001dc
@@ -2377,6 +4596,9 @@ kong:
 fu:
 	.ascii "-"
 	.align 4
+f_cos_sin_100khz:
+	.float 1.000000,-0.000000,0.995185,-0.098017,0.980785,-0.195090,0.956940,-0.290285,0.923880,-0.382683,0.881921,-0.471397,0.831470,-0.555570,0.773011,-0.634393,0.707107,-0.707107,0.634393,-0.773010,0.555570,-0.831469,0.471397,-0.881921,0.382684,-0.923879,0.290285,-0.956940,0.195091,-0.980785,0.098017,-0.995185,0.000000,-1.000000,-0.098017,-0.995185,-0.195090,-0.980785,-0.290284,-0.956940,-0.382683,-0.923880,-0.471396,-0.881921,-0.555570,-0.831470,-0.634393,-0.773011,-0.707106,-0.707107,-0.773010,-0.634394,-0.831469,-0.555571,-0.881921,-0.471397,-0.923879,-0.382684,-0.956940,-0.290285,-0.980785,-0.195091,-0.995185,-0.098018,-1.000000,-0.000001,-0.995185,0.098017,-0.980785,0.195090,-0.956941,0.290284,-0.923880,0.382683,-0.881922,0.471396,-0.831470,0.555569,-0.773011,0.634393,-0.707107,0.707106,-0.634394,0.773010,-0.555571,0.831469,-0.471398,0.881921,-0.382684,0.923879,-0.290285,0.956940,-0.195091,0.980785,-0.098018,0.995185,-0.000001,1.000000,0.098016,0.995185,0.195089,0.980785,0.290284,0.956941,0.382683,0.923880,0.471396,0.881922,0.555569,0.831471,0.634392,0.773011,0.707106,0.707108,0.773010,0.634394,0.831469,0.555571,0.881921,0.471398,0.923879,0.382685,0.956940,0.290286,0.980785,0.195091,0.995185,0.098018
+	.align 4
 zhengxian_10khz:
 	.byte 128,143,159,174,189,202,215,226,235,243,249,253,255,255,253,249,243,235,226,215,202,189,174,159,143,128,112,96,81,66,53,40,29,20,12,6,2,0,0,2,6,12,20,29,40,53,66,81,96,112
 	
@@ -2388,6 +4610,16 @@ zhengxian_100khz1:
 zhengxian_100khz:
 	.byte 16,18,20,23,25,26,28,29,30,31,31,31,30,29,28,26,25,23,20,18,16,13,11,8,6,5,3,2,1,0,0,0,1,2,3,5,6,8,11,13
 
+
+cos_sin_100khz1:
+	.int 0x8000,0x0000,0x7E6C,0xFFFFEBFA,0x79BC,0xFFFFD873,0x720C,0xFFFFC5E4,0x678D,0xFFFFB4C4,0x5A82,0xFFFFA57E,0x4B3C,0xFFFF9873,0x3A1C,0xFFFF8DF4,0x278D,0xFFFF8644,0x1406,0xFFFF8194,0x0000,0xFFFF8000,0xFFFFEBFA,0xFFFF8194,0xFFFFD873,0xFFFF8644,0xFFFFC5E4,0xFFFF8DF4,0xFFFFB4C4,0xFFFF9873,0xFFFFA57E,0xFFFFA57E,0xFFFF9873,0xFFFFB4C4,0xFFFF8DF4,0xFFFFC5E4,0xFFFF8644,0xFFFFD873,0xFFFF8194,0xFFFFEBFA,0xFFFF8000,0x0000,0xFFFF8194,0x1406,0xFFFF8644,0x278D,0xFFFF8DF4,0x3A1C,0xFFFF9873,0x4B3C,0xFFFFA57E,0x5A82,0xFFFFB4C4,0x678D,0xFFFFC5E4,0x720C,0xFFFFD873,0x79BC,0xFFFFEBFA,0x7E6C,0x0000,0x8000,0x1406,0x7E6C,0x278D,0x79BC,0x3A1C,0x720C,0x4B3C,0x678D,0x5A82,0x5A82,0x678D,0x4B3C,0x720C,0x3A1C,0x79BC,0x278D,0x7E6C,0x1406
+	.int 0x8000,0x0000,0x7E6C,0xFFFFEBFA,0x79BC,0xFFFFD873,0x720C,0xFFFFC5E4,0x678D,0xFFFFB4C4,0x5A82,0xFFFFA57E,0x4B3C,0xFFFF9873,0x3A1C,0xFFFF8DF4,0x278D,0xFFFF8644,0x1406,0xFFFF8194,0x0000,0xFFFF8000,0xFFFFEBFA,0xFFFF8194,0xFFFFD873,0xFFFF8644,0xFFFFC5E4,0xFFFF8DF4,0xFFFFB4C4,0xFFFF9873,0xFFFFA57E,0xFFFFA57E,0xFFFF9873,0xFFFFB4C4,0xFFFF8DF4,0xFFFFC5E4,0xFFFF8644,0xFFFFD873,0xFFFF8194,0xFFFFEBFA,0xFFFF8000,0x0000,0xFFFF8194,0x1406,0xFFFF8644,0x278D,0xFFFF8DF4,0x3A1C,0xFFFF9873,0x4B3C,0xFFFFA57E,0x5A82,0xFFFFB4C4,0x678D,0xFFFFC5E4,0x720C,0xFFFFD873,0x79BC,0xFFFFEBFA,0x7E6C,0x0000,0x8000,0x1406,0x7E6C,0x278D,0x79BC,0x3A1C,0x720C,0x4B3C,0x678D,0x5A82,0x5A82,0x678D,0x4B3C,0x720C,0x3A1C,0x79BC,0x278D,0x7E6C,0x1406
+	.int 0x8000,0x0000,0x7E6C,0xFFFFEBFA,0x79BC,0xFFFFD873,0x720C,0xFFFFC5E4,0x678D,0xFFFFB4C4,0x5A82,0xFFFFA57E,0x4B3C,0xFFFF9873,0x3A1C,0xFFFF8DF4,0x278D,0xFFFF8644,0x1406,0xFFFF8194,0x0000,0xFFFF8000,0xFFFFEBFA,0xFFFF8194,0xFFFFD873,0xFFFF8644,0xFFFFC5E4,0xFFFF8DF4,0xFFFFB4C4,0xFFFF9873,0xFFFFA57E,0xFFFFA57E,0xFFFF9873,0xFFFFB4C4,0xFFFF8DF4,0xFFFFC5E4,0xFFFF8644,0xFFFFD873,0xFFFF8194,0xFFFFEBFA,0xFFFF8000,0x0000,0xFFFF8194,0x1406,0xFFFF8644,0x278D,0xFFFF8DF4,0x3A1C,0xFFFF9873,0x4B3C,0xFFFFA57E,0x5A82,0xFFFFB4C4,0x678D,0xFFFFC5E4,0x720C,0xFFFFD873,0x79BC,0xFFFFEBFA,0x7E6C,0x0000,0x8000,0x1406,0x7E6C,0x278D,0x79BC,0x3A1C,0x720C,0x4B3C,0x678D,0x5A82,0x5A82,0x678D,0x4B3C,0x720C,0x3A1C,0x79BC,0x278D,0x7E6C,0x1406
+	.int 0x8000,0x0000,0x7E6C,0xFFFFEBFA,0x79BC,0xFFFFD873,0x720C,0xFFFFC5E4,0x678D,0xFFFFB4C4,0x5A82,0xFFFFA57E,0x4B3C,0xFFFF9873,0x3A1C,0xFFFF8DF4,0x278D,0xFFFF8644,0x1406,0xFFFF8194,0x0000,0xFFFF8000,0xFFFFEBFA,0xFFFF8194,0xFFFFD873,0xFFFF8644,0xFFFFC5E4,0xFFFF8DF4,0xFFFFB4C4,0xFFFF9873,0xFFFFA57E,0xFFFFA57E,0xFFFF9873,0xFFFFB4C4,0xFFFF8DF4,0xFFFFC5E4,0xFFFF8644,0xFFFFD873,0xFFFF8194,0xFFFFEBFA,0xFFFF8000,0x0000,0xFFFF8194,0x1406,0xFFFF8644,0x278D,0xFFFF8DF4,0x3A1C,0xFFFF9873,0x4B3C,0xFFFFA57E,0x5A82,0xFFFFB4C4,0x678D,0xFFFFC5E4,0x720C,0xFFFFD873,0x79BC,0xFFFFEBFA,0x7E6C,0x0000,0x8000,0x1406,0x7E6C,0x278D,0x79BC,0x3A1C,0x720C,0x4B3C,0x678D,0x5A82,0x5A82,0x678D,0x4B3C,0x720C,0x3A1C,0x79BC,0x278D,0x7E6C,0x1406
+
+
+
+	
 cos_sin_100khz:
 	.int 0x8000,0x0000,0x7F62,0xFFFFF375,0x7D8A,0xFFFFE708,0x7A7D,0xFFFFDAD8,0x7641,0xFFFFCF05,0x70E2,0xFFFFC3AA,0x6A6D,0xFFFFB8E4,0x62F2,0xFFFFAECD,0x5A82,0xFFFFA57E,0x5133,0xFFFF9D0E,0x471C,0xFFFF9593,0x3C56,0xFFFF8F1E,0x30FB,0xFFFF89BF,0x2528,0xFFFF8583,0x18F8,0xFFFF8276,0x0C8B,0xFFFF809E,0x0000,0xFFFF8000,0xFFFFF375,0xFFFF809E,0xFFFFE708,0xFFFF8276,0xFFFFDAD8,0xFFFF8583,0xFFFFCF05,0xFFFF89BF,0xFFFFC3AA,0xFFFF8F1E,0xFFFFB8E4,0xFFFF9593,0xFFFFAECD,0xFFFF9D0E,0xFFFFA57E,0xFFFFA57E,0xFFFF9D0F,0xFFFFAECD,0xFFFF9593,0xFFFFB8E4,0xFFFF8F1E,0xFFFFC3AA,0xFFFF89BF,0xFFFFCF05,0xFFFF8583,0xFFFFDAD8,0xFFFF8276,0xFFFFE708,0xFFFF809E,0xFFFFF375,0xFFFF8000,0x0000,0xFFFF809E,0x0C8B,0xFFFF8276,0x18F8,0xFFFF8583,0x2528,0xFFFF89BF,0x30FB,0xFFFF8F1E,0x3C56,0xFFFF9593,0x471C,0xFFFF9D0E,0x5133,0xFFFFA57E,0x5A82,0xFFFFAECD,0x62F1,0xFFFFB8E4,0x6A6D,0xFFFFC3AA,0x70E2,0xFFFFCF05,0x7641,0xFFFFDAD8,0x7A7D,0xFFFFE708,0x7D8A,0xFFFFF375,0x7F62,0x0000,0x8000,0x0C8B,0x7F62,0x18F8,0x7D8A,0x2528,0x7A7D,0x30FB,0x7641,0x3C56,0x70E2,0x471C,0x6A6D,0x5133,0x62F2,0x5A82,0x5A82,0x62F1,0x5133,0x6A6D,0x471C,0x70E2,0x3C56,0x7641,0x30FB,0x7A7D,0x2528,0x7D8A,0x18F8,0x7F62,0x0C8B
 	.int 0x8000,0x0000,0x7F62,0xFFFFF375,0x7D8A,0xFFFFE708,0x7A7D,0xFFFFDAD8,0x7641,0xFFFFCF05,0x70E2,0xFFFFC3AA,0x6A6D,0xFFFFB8E4,0x62F2,0xFFFFAECD,0x5A82,0xFFFFA57E,0x5133,0xFFFF9D0E,0x471C,0xFFFF9593,0x3C56,0xFFFF8F1E,0x30FB,0xFFFF89BF,0x2528,0xFFFF8583,0x18F8,0xFFFF8276,0x0C8B,0xFFFF809E,0x0000,0xFFFF8000,0xFFFFF375,0xFFFF809E,0xFFFFE708,0xFFFF8276,0xFFFFDAD8,0xFFFF8583,0xFFFFCF05,0xFFFF89BF,0xFFFFC3AA,0xFFFF8F1E,0xFFFFB8E4,0xFFFF9593,0xFFFFAECD,0xFFFF9D0E,0xFFFFA57E,0xFFFFA57E,0xFFFF9D0F,0xFFFFAECD,0xFFFF9593,0xFFFFB8E4,0xFFFF8F1E,0xFFFFC3AA,0xFFFF89BF,0xFFFFCF05,0xFFFF8583,0xFFFFDAD8,0xFFFF8276,0xFFFFE708,0xFFFF809E,0xFFFFF375,0xFFFF8000,0x0000,0xFFFF809E,0x0C8B,0xFFFF8276,0x18F8,0xFFFF8583,0x2528,0xFFFF89BF,0x30FB,0xFFFF8F1E,0x3C56,0xFFFF9593,0x471C,0xFFFF9D0E,0x5133,0xFFFFA57E,0x5A82,0xFFFFAECD,0x62F1,0xFFFFB8E4,0x6A6D,0xFFFFC3AA,0x70E2,0xFFFFCF05,0x7641,0xFFFFDAD8,0x7A7D,0xFFFFE708,0x7D8A,0xFFFFF375,0x7F62,0x0000,0x8000,0x0C8B,0x7F62,0x18F8,0x7D8A,0x2528,0x7A7D,0x30FB,0x7641,0x3C56,0x70E2,0x471C,0x6A6D,0x5133,0x62F2,0x5A82,0x5A82,0x62F1,0x5133,0x6A6D,0x471C,0x70E2,0x3C56,0x7641,0x30FB,0x7A7D,0x2528,0x7D8A,0x18F8,0x7F62,0x0C8B
