@@ -454,11 +454,7 @@ y1:
 	str r1, [r4, # 0x04]
 	str r2, [r4, # 0x08]
 	str r3, [r4, # 0x0c]
-	ldr r0, [r4, # 0x08]
-	ldr r1, [r4, # 0x0c]
-	ldr r2, [r4]
-	ldr r3, [r4, # 0x04]
-	bl __jisuan_z_fudu
+	bl __jisuan_z_fudu1
 	mov r6, r0
 
 	ldr r0, = shangbi_r
@@ -673,6 +669,20 @@ __jisuan_z_fudu:
 	muls r4, r4, r2
 	udiv r0, r4, r0
 	pop {r4,pc}
+
+__jisuan_z_fudu1:
+	@入口R0=c，R1=d，R2=a，R3=b
+	push {r4,lr}
+	bl __ji_suan_fu_du
+	mov r4, r0
+	mov r0, r2
+	mov r1, r3
+	bl __ji_suan_fu_du
+	ldr r2, = 1000
+	muls r0, r0, r2
+	udiv r0, r0, r4
+	pop {r4,pc}
+	
 	
 __jisuan_zukang:
 	push {r0-r4,r6-r7,lr}
