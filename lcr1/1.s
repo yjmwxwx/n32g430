@@ -445,15 +445,19 @@ y1:
 	bl __jisuan_zukang
 	
 	pop {r0-r3}
-	asrs r0, r0, # 8
-	asrs r1, r1, # 8
-	asrs r2, r2, # 8
-	asrs r3, r3, # 8
+	asrs r0, r0, # 6
+	asrs r1, r1, # 6
+	asrs r2, r2, # 6
+	asrs r3, r3, # 6
 	ldr r4, = xiabi_rr
 	str r0, [r4]
 	str r1, [r4, # 0x04]
 	str r2, [r4, # 0x08]
 	str r3, [r4, # 0x0c]
+	ldr r0, [r4, # 0x08]
+	ldr r1, [r4, # 0x0c]
+	ldr r2, [r4]
+	ldr r3, [r4, # 0x04]
 	bl __jisuan_z_fudu
 	mov r6, r0
 
@@ -493,17 +497,17 @@ __mansu:
 	
 	@	ldr r0, = 0x20000200
 	@	ldrh r0, [r0]
-	mov r0, r1
-	movs r1, # 6
-	ldr r2, = asciibiao
-	movs r3, # 0xff            @小数点位置
-	bl _zhuanascii
-	movs r0, # 6            @写几个字
-	movs r1, # 48           @字库单字长度
-	movs r2, # 3            @宽度
-	movw r3, # 0x1102              @lcd位置
-	bl __xie_lcd_ascii
-	b ting
+@	mov r0, r1
+@	movs r1, # 6
+@	ldr r2, = asciibiao
+@	movs r3, # 0xff            @小数点位置
+@	bl _zhuanascii
+@	movs r0, # 6            @写几个字
+@	movs r1, # 48           @字库单字长度
+@	movs r2, # 3            @宽度
+@	movw r3, # 0x1102              @lcd位置
+@	bl __xie_lcd_ascii
+@	b ting
 __kuaisu:
 	ldr r0, = shangbi_rr
 	ldr r1, = shangbi_ii
@@ -526,10 +530,6 @@ __kuaisu:
 	bl __jisuan_zukang
 	bl __xianshi_zukang
 	b ting
-
-
-
-
 	
 	mov r0, r6
         movs r1, # 6
@@ -539,7 +539,7 @@ __kuaisu:
 	movs r0, # 6            @写几个字
 	movs r1, # 48           @字库单字长度
 	movs r2, # 3            @宽度
-	movw r3, # 0x1102              @lcd位置
+	movw r3, # 0x1105              @lcd位置
 	bl __xie_lcd_ascii
 	b ting
 	
@@ -755,6 +755,8 @@ __bao:
 	ldr r2, = z_jiao_du
 	str r0, [r2]
 	pop {r0-r4,r6-r7,pc}
+
+
 	
 __lv_bo_qi:
 	@地址顺序：指针，累加值，缓冲区
