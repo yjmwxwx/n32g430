@@ -379,7 +379,12 @@ __qiehuan_shangbi1:
 	movs r1, # 1
 	lsls r1, r1, # 16
 	str r1, [r0, # 0x18]
-
+@	bkpt # 4
+	ldr r0, = 0x40023400
+	movw r1, 0x8020
+	str r1, [r0, # 0x14]
+	
+	
 	ldr r0, = 100000
 y:
 	subs r0, r0, # 1
@@ -416,6 +421,14 @@ __qiehuan_xiabi1:
 	ldr r0, = 0x40023800
 	movs r1, # 1
 	str r1, [r0, # 0x18]
+@	bkpt # 5
+	ldr r0, = 0x40023400
+	movw r1, # 0x8000
+	str r1, [r0, # 0x14]
+	
+
+
+	
 	ldr r0, = 100000
 y1:	
 	subs r0, r0, # 1
