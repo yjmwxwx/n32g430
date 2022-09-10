@@ -274,9 +274,9 @@ __deng_adc_zhunbeihao:
 
 	ldr r0, = lvbo_changdu
 	ldr r1, = lvbo_youyi
-	movs r2, # 100
+	movs r2, # 200
 	str r2, [r0]
-	movs r2, # 13
+	movs r2, # 14
 	str r2, [r1]
 	
  @       ldr r0, = 0xe000e010
@@ -373,9 +373,15 @@ __lcd_chushihua:
 	ldr r0, = liangcheng
 	movs r1, # 0x04
 	str r1, [r0]
-	
+@	bl __xianshi_dangwei
+	movs r0, r0
+	movs r0, r0
+	movs r0, r0
+	movs r0, r0
+	movs r0, r0
+	movs r0, r0
 ting:
-
+	bl __zidong_dangwei
 __qiehuan_shangbi1:
 	ldr r0, = 0x40023800
 	movs r1, # 1
@@ -469,7 +475,7 @@ y1:
 
 	bl __jisuan_zukang
 	
-	pop {r0-r3}
+	pop {r0-r3}	@r0=x_rr,r1=x_ii,r2=r_rr,r3=r_ii
 	asrs r0, r0, # 6
 	asrs r1, r1, # 6
 	asrs r2, r2, # 6
@@ -480,6 +486,8 @@ y1:
 	str r2, [r4, # 0x08]
 	str r3, [r4, # 0x0c]
 	bl __jisuan_z_fudu1
+	ldr r6, = z_fudu
+	str r0, [r6]
 	mov r6, r0
 
 	ldr r0, = shangbi_r
@@ -501,34 +509,20 @@ y1:
 	subs r0, r6, r1
 __kuaiman_jiance:
 	cmp r0, # 20
-	bhi __kuaisu
+@	bhi __kuaisu
 	b __mansu
 
 __mansu:
 	
 
-	bl __xianshi_shangxia_bi
-
-
+@	bl __xianshi_shangxia_bi
+	bl __xianshi_zhu_danwei
+	bl __xianshi_z_fudu
+	bl __xianshi_dangwei
 	bl __jisuan_zukang
 	bl __xianshi_zukang
 	b ting
 	
-	
-	
-	@	ldr r0, = 0x20000200
-	@	ldrh r0, [r0]
-@	mov r0, r1
-@	movs r1, # 6
-@	ldr r2, = asciibiao
-@	movs r3, # 0xff            @小数点位置
-@	bl _zhuanascii
-@	movs r0, # 6            @写几个字
-@	movs r1, # 48           @字库单字长度
-@	movs r2, # 3            @宽度
-@	movw r3, # 0x1102              @lcd位置
-@	bl __xie_lcd_ascii
-@	b ting
 __kuaisu:
 	ldr r0, = shangbi_rr
 	ldr r1, = shangbi_ii
@@ -547,78 +541,121 @@ __kuaisu:
 	str r2, [r6]
 	str r3, [r7]
 
-	bl __xianshi_shangxia_bi
-	bl __jisuan_zukang
-	bl __xianshi_zukang
-	b ting
-	
-	mov r0, r6
-        movs r1, # 6
-	ldr r2, = asciibiao
-	movs r3, # 0xff            @小数点位置
-	bl _zhuanascii
-	movs r0, # 6            @写几个字
-	movs r1, # 48           @字库单字长度
-	movs r2, # 3            @宽度
-	movw r3, # 0x1105              @lcd位置
-	bl __xie_lcd_ascii
-	b ting
-	
+	@	bl __xianshi_shangxia_bi
+	bl __xianshi_zhu_danwei
+	bl __xianshi_z_fudu
+	bl __xianshi_dangwei
 	bl __jisuan_zukang
 	bl __xianshi_zukang
 	b ting
 
-	ldr r0, = 0x40020800
-	ldrh r0, [r0, # 0x4c]
-	movs r1, # 5             @转换几个字符
+
+__xianshi_zhu_danwei:	@zdw
+	push {r0-r4,lr}
+	ldr r0, = liangcheng
+	ldr r1, = rs_danwei_biao
+	ldr r0, [r0]
+	ldrb r0, [r1, r0]
+	movs r1, # 2             @两个字符
+	ldr r2, = asciibiao
+	movs r3, # 0xff
+	bl _zhuanascii
+	movs r0, # 2            @写几个字
+	movs r1, # 45           @字库单字长度
+	movs r2, # 3            @宽度
+	movw r3, # 0x6502              @lcd位置(高8位0-0x83,低8位0-7)
+	ldr r4, = danweibiao
+	bl __xie_alabo
+
+
+	ldr r0, = pinlv
+	ldr r1, = liangcheng
+	ldr r2, = xs_cs_ls
+	ldr r3, [r2]
+	ldr r2, [r0]
+	lsls r3, r3, # 2
+	ldr r0, = zhucanshu_i_danwei_biao
+	ldr r0, [r0, r3]
+	lsls r2, r2, # 2
+	ldr r0, [r0, r2]
+	ldr r3, [r1]
+	ldrb r0, [r0, r3]
+	
+	movs r1, # 2             @转换几个字符
+	ldr r2, = asciibiao
+	movs r3, # 0xff
+	bl _zhuanascii
+	movs r0, # 2            @写几个字
+	movs r1, # 45           @字库单字长度
+	movs r2, # 3            @宽度
+	movw r3, # 0x6505              @lcd位置(高8位0-0x83,低8位0-7)
+	ldr r4, = danweibiao
+	bl __xie_alabo
+	pop {r0-r4,pc}
+	
+__zidong_dangwei:
+	push {r0-r3,lr}
+__huan_dang:
+	ldr r0, = z_fudu
+	ldr r0, [r0]
+	lsrs r0, r0, # 4
+	ldr r3, =  1000
+	lsrs r3, r3, # 4
+	cmp r0, r3
+	bcc __dang_wei_jian
+	ldr r3, =  3000
+	lsrs r3, r3, # 4
+	cmp r0, r3
+	bcc __zi_dong_dang_wei_fan_hui
+	ldr r0, = liangcheng
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 24
+	bne __zi_dong_dang_wei_fan_hui
+	movs r1, # 23
+	str r1, [r0]
+	b __zi_dong_dang_wei_fan_hui
+__dang_wei_jian:
+	ldr r0, = liangcheng
+	ldr r1, [r0]
+	subs r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 0xff
+	bcc __zi_dong_dang_wei_fan_hui
+	movs r1, # 0
+	str r1, [r0]
+__zi_dong_dang_wei_fan_hui:
+	pop {r0-r3,pc}
+		
+__xianshi_z_fudu:
+	push {r0-r3,lr}
+        ldr r0, = z_fudu
+	movs r1, # 4             @转换几个字符
+	ldr r0, [r0]
 	ldr r2, = asciibiao
 	movs r3, # 0xff             @小数点位置
 	bl __zhuanascii
 	ldr r0, = asciibiao
-	movs r1, # 5           @显示几个字符
-	movw r2, # 0x00         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	movs r1, # 4           @显示几个字符
+	movw r2, # 0x5901         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
-
-	ldr r0, = 0x40023800
-	ldr r3, = 0x20000100
-	ldr r4, [r3]
-	cmp r4, # 1
-	bne __shangbi_kai
-__xiabi_kai:
-	movs r1, # 1
-	str r1, [r0, # 0x18]
-	b ting
-
+	pop {r0-r3,pc}
 	
-	ldr r1, = 0x20000104
-	ldr r2, [r1]
-	adds r2, r2, # 1
-	str r2, [r1]
-	cmp r2, # 100
-	bls ting
-	movs r2, # 0
-	str r2, [r1]
-	movs r1, # 0
-	str r1, [r3]
-	b ting
-__shangbi_kai:	
-	movs r1, # 1
-@	lsls r1, r1, # 16
-	str r1, [r0, # 0x18]
-	b ting
+__xianshi_dangwei:
+	push {r0-r3,lr}
+	ldr r0, = liangcheng
+	movs r1, # 2             @转换几个字符
+	ldr r0, [r0]
+	ldr r2, = asciibiao
+	movs r3, # 0xff             @小数点位置
+	bl __zhuanascii
+	ldr r0, = asciibiao
+	movs r1, # 2           @显示几个字符
+	movw r2, # 0x7701         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	pop {r0-r3,pc}
 	
-	ldr r1, = 0x20000104
-	ldr r2, [r1]
-	adds r2, r2, # 1
-	str r2, [r1]
-	cmp r2, # 100
-	bls ting
-	movs r2, # 0
-	str r2, [r1]
-	movs r1, # 1
-	str r1, [r3]
-	b ting
-
 __xianshi_zukang:
 	push {r0-r6,lr}
         ldr r0, = z_r
@@ -628,23 +665,31 @@ __xianshi_zukang:
 	movs r6, r0
 	bmi __z_r_shi_fu
 __z_r_bushi_fu:
-	ldr r0, = kong
+	ldr r0, = jia
 	movs r1, # 1           @显示几个字符
-	movw r2, # 0x00         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	movw r2, # 0x0804         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	b __xianshi_z_r
 __z_r_shi_fu:
 	ldr r0, = fu
 	movs r1, # 1           @显示几个字符
-	movw r2, # 0x00         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	movw r2, # 0x0804         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	mvns r6, r6
 	adds r6, r6, # 1
 __xianshi_z_r:
+	ldr r0, = zukang_xiaoshudian
+	ldr r1, = pinlv
+	ldr r2, = liangcheng
+	ldr r3, [r1]
+	lsls r3, r3, # 2
+	ldr r1, [r2]
+	ldr r3, [r0, r3]
+	ldrb r3, [r3, r1]
 	mov r0, r6
         movs r1, # 6
 	ldr r2, = asciibiao
-	movs r3, # 3            @小数点位置
+@	movs r3, # 0xff            @小数点位置
 	bl _zhuanascii
 	movs r0, # 6            @写几个字
 	movs r1, # 48           @字库单字长度
@@ -656,23 +701,36 @@ __xianshi_z_r:
 	movs r6, r5
 	bmi __z_i_shi_fu
 __z_i_bushi_fu:
-	ldr r0, = kong
+	ldr r0, = jia
 	movs r1, # 1           @显示几个字符
-	movw r2, # 0x4200         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	movw r2, # 0x0807         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	b __xianshi_z_i
 __z_i_shi_fu:
 	ldr r0, = fu
 	movs r1, # 1           @显示几个字符
-	movw r2, # 0x4200         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	movw r2, # 0x0807         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	mvns r6, r6
 	adds r6, r6, # 1
 __xianshi_z_i:
+        ldr r0, = pinlv
+	ldr r1, = liangcheng
+	ldr r2, = xs_cs_ls
+	ldr r3, [r2]
+	ldr r2, [r0]
+	lsls r3, r3, # 2
+	ldr r0, = zhucanshu_i_xiaoshudian
+	ldr r0, [r0, r3]
+	lsls r2, r2, # 2
+	ldr r0, [r0, r2]
+	ldr r3, [r1]
+	ldrb r3, [r0, r3]
+	
 	mov r0, r6
         movs r1, # 6
 	ldr r2, = asciibiao
-	movs r3, # 3            @小数点位置
+@	movs r3, # 3            @小数点位置
 	bl _zhuanascii
 	movs r0, # 6            @写几个字
 	movs r1, # 48           @字库单字长度
@@ -711,12 +769,11 @@ __jisuan_z_fudu1:
 	
 __jisuan_zukang:
 	push {r0-r4,r6-r7,lr}
-@	ldr r0, = zukang_dianzu_biao
-@	ldr r1, = liangcheng
-@	ldr r1, [r1]
-@	lsls r1, r1, # 2
-	@	ldr r4, [r0, r1]
-	ldr r4, = 10000
+	ldr r0, = zukang_dianzu_biao
+	ldr r1, = liangcheng
+	ldr r1, [r1]
+	lsls r1, r1, # 2
+	ldr r4, [r0, r1]
 	
 	ldr r0, = shangbi_r
 	ldr r1, = shangbi_i
@@ -823,6 +880,7 @@ __huanchong_leijia:
 	mov r0, r1
 	pop {r3-r7,pc}
 	.ltorg
+
 
 	
 __xianshi_shangxia_bi:
@@ -4588,6 +4646,9 @@ __systick_fanhui:
 	.section .data
 	.equ STACHINIT,         	0x20004000      @堆栈顶
 	.equ asciibiao,			0x20000000	@ASCII表
+	.equ xs_cs_ls,			0x20000194
+	.equ pinlv,			0x20000198
+	.equ man_z_fudu,		0x2000019c
 	.equ liangcheng,		0x200001a0
 	.equ z_fudu,			0x200001a4
 	.equ xiabi_rr,			0x200001a8
@@ -4609,16 +4670,126 @@ __systick_fanhui:
 	.equ dft_shuliang,		0x200001f8	@dft数量
 	.equ sp_zhizhen,		0x200001fc	@堆栈指针
 	.equ dianyabiao,		0x20000200	@电压表
-	.equ lvboqizhizhen,		0x20003400
-	.equ lvboqihuanchong,		0x20003408
-	.equ lvboqizhizhen1,		0x200035a0
-	.equ lvboqihuanchong1,		0x200035a8
-	.equ lvboqizhizhen2,		0x20003740
-	.equ lvboqihuanchong2,		0x20003748
-	.equ lvboqizhizhen3,		0x200038e0
-	.equ lvboqihuanchong3,		0x200038e8
+	.equ lvboqizhizhen,		0x20002150
+	.equ lvboqihuanchong,		0x20002158
+	.equ lvboqizhizhen1,		0x20002550
+	.equ lvboqihuanchong1,		0x20002558
+	.equ lvboqizhizhen2,		0x20002950
+	.equ lvboqihuanchong2,		0x20002958
+	.equ lvboqizhizhen3,		0x20002d50
+	.equ lvboqihuanchong3,		0x20002d58
+	@biao dwb
+zukang_dianzu_biao:
+	.int 55555,16666,33333,55555,10000,16666,33333,10000
+	.int 30000,60000,10000,30000,6000,10000,30000,6000
+	.int 10000,30000,6000,10000,18000,3000,6000,1800
+	.align 4
+rs_danwei_biao:@31=毫欧，91=欧，81=千欧，41=兆欧
+	.byte 31,31,31,91,91,91,91,91
+	.byte 91,91,81,81,81,81,81,81
+	.byte 81,81,81,41,41,41,41,41
+zhucanshu_i_danwei_biao:	
+	.word xs_danwei_biao
+	.word cs_danwei_biao
+	.word ls_danwei_biao
+xs_danwei_biao:
+	.word xs_danwei_100hz
+	.word xs_danwei_1khz
+	.word xs_danwei_10khz
+	.word xs_danwei_100khz
+xs_danwei_100hz:
+xs_danwei_1khz:
+xs_danwei_10khz:
+xs_danwei_100khz:
+	.byte 31,31,31,91,91,91,91,91
+	.byte 91,91,81,81,81,81,81,81
+	.byte 81,81,81,41,41,41,41,41
+cs_danwei_biao:
+	.word cs_danwei_100hz
+	.word cs_danwei_1khz
+	.word cs_danwei_10khz
+	.word cs_danwei_100khz
+cs_danwei_100hz:
+cs_danwei_1khz:
+cs_danwei_10khz:
+cs_danwei_100khz:
+	.byte 02,02,02,02,02,02,02,02
+	.byte 02,02,02,02,02,02,02,02
+	.byte 02,02,02,02,02,02,02,02
+ls_danwei_biao:
+	.word ls_danwei_100hz
+	.word ls_danwei_1khz
+	.word ls_danwei_10khz
+	.word ls_danwei_100khz
+ls_danwei_100hz:
+ls_danwei_1khz:
+ls_danwei_10khz:
+ls_danwei_100khz:	
+	.byte 07,07,07,07,07,07,07,07
+	.byte 07,07,07,07,07,07,07,07
+	.byte 07,07,07,07,07,07,07,07
+
+
+zhucanshu_i_xiaoshudian:
+	.word xs_xiaoshudian
+	.word cs_xiaoshudian
+	.word ls_xiaoshudian
+xs_xiaoshudian:
+	.word xs_xiaoshudian_100hz
+	.word xs_xiaoshudian_1khz
+	.word xs_xiaoshudian_10khz
+	.word xs_xiaoshudian_100khz
+					@rsd
+xs_xiaoshudian_100hz:
+xs_xiaoshudian_1khz:
+xs_xiaoshudian_10khz:
+xs_xiaoshudian_100khz:		
+	.byte 3,4,4,4,2,2,2,3	
+	.byte 3,3,4,4,2,2,2,3
+	.byte 3,3,3, 3,3,3,3,3
+cs_xiaoshudian:
+	.word cs_xiaoshudian_100hz
+	.word cs_xiaoshudian_1khz
+	.word cs_xiaoshudian_10khz
+	.word cs_xiaoshudian_100khz
+cs_xiaoshudian_100hz:
+cs_xiaoshudian_1khz:
+cs_xiaoshudian_10khz:
+cs_xiaoshudian_100khz:
+	.byte 5,5,5,5,5,5,5,5
+	.byte 5,5,5,5,5,5,5,5
+	.byte 5,5,5,5,5,5,5,5
+ls_xiaoshudian:
+	.word ls_xiaoshudian_100hz
+	.word ls_xiaoshudian_1khz
+	.word ls_xiaoshudian_10khz
+	.word ls_xiaoshudian_100khz
+ls_xiaoshudian_100hz:
+ls_xiaoshudian_1khz:
+ls_xiaoshudian_10khz:
+ls_xiaoshudian_100khz:
+	.byte 5,5,5,5,5,5,5,5
+	.byte 5,5,5,5,5,5,5,5
+	.byte 5,5,5,5,5,5,5,5
+	
+
+	
+zukang_xiaoshudian:
+	.word zukang_xiaoshudian_100hz
+	.word zukang_xiaoshudian_1khz
+	.word zukang_xiaoshudian_10khz
+	.word zukang_xiaoshudian_100khz
+zukang_xiaoshudian_100hz:
+zukang_xiaoshudian_1khz:
+zukang_xiaoshudian_10khz:
+zukang_xiaoshudian_100khz:	@zkd
+	.byte 3,4,4,4,2,2,2,3
+	.byte 3,3,4,4,2,2,2,3
+	.byte 3,3,3,  3,3,3,3,3
 yjmwxwx:
 	.ascii "yjmwxwx"
+jia:
+	.ascii	"+"
 kong:
 	.ascii " "
 fu:
@@ -4771,3 +4942,5 @@ danweibiao: @15*24
 	.byte 0x00, 0x00, 0x00, 0x80, 0xFF, 0x7F, 0x80, 0xFF, 0x7F, 0x80, 0xFF, 0x7F, 0x00, 0x07, 0x00, 0x80, 0x03, 0x00, 0xC0, 0x01, 0x00, 0xC0, 0x01, 0x00, 0xC0, 0x01, 0x00, 0xC0, 0x03, 0x00, 0xC0, 0xFF, 0x7F, 0x80, 0xFF, 0x7F, 0x00, 0xFE, 0x7F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 @ n
 	.byte 0x00, 0x00, 0x00, 0xFE, 0xFF, 0x7F, 0xFE, 0xFF, 0x7F, 0xFE, 0xFF, 0x7F, 0x1C, 0xE0, 0x00, 0x0E, 0xC0, 0x00, 0x06, 0x80, 0x01, 0x06, 0x80, 0x01, 0x06, 0x80, 0x01, 0x0E, 0xC0, 0x01, 0x1C, 0xE0, 0x00, 0xFC, 0xFF, 0x00, 0xF8, 0x7F, 0x00, 0xE0, 0x1F, 0x00, 0x00, 0x00, 0x00   @ p
 	.byte 0x00, 0x00, 0x00, 0xFE, 0xFF, 0x7F, 0xFE, 0xFF, 0x7F, 0xFE, 0xFF, 0x7F, 0x00, 0x1C, 0x00, 0x00, 0x1C, 0x00, 0x00, 0x1C, 0x00, 0x00, 0x1C, 0x00, 0x00, 0x1C, 0x00, 0x00, 0x1C, 0x00, 0x00, 0x1C, 0x00, 0x00, 0x1C, 0x00, 0xFE, 0xFF, 0x7F, 0xFE, 0xFF, 0x7F, 0xFE, 0xFF, 0x7F @ H
+	.byte 0x00, 0x00, 0x00, 0xFC, 0xFF, 0x7F, 0xFC, 0xFF, 0x7F, 0xFC, 0xFF, 0x7F, 0x00, 0x7C, 0x00, 0x00, 0xFE, 0x00, 0x00, 0xEF, 0x01, 0x80, 0xC7, 0x03, 0xC0, 0x83, 0x07, 0xE0, 0x01, 0x0F, 0xF0, 0x00, 0x1E, 0x78, 0x00, 0x3C, 0x3C, 0x00, 0x78, 0x1C, 0x00, 0x70, 0x0C, 0x00, 0x60	@ K
+	.byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00	@空
