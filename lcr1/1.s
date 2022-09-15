@@ -473,7 +473,7 @@ __ren_wu_diao_du:
 	mov r0, r0
 	mov r0, r0
 	mov r0, r0
-	
+	movs r0, r0
 ting:	
 	bl __zidong_dangwei
 	ldr r0, = shangci_dangwei
