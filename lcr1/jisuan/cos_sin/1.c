@@ -6,8 +6,8 @@ void main() {
 
   int rr,ii, n,i;
   n=4000;
-  m=100;
-  pi=3.141592;    
+  m=10;
+  pi=3.1415927;    
 	for(i=0;i<n;i++){
 	   sr=cos(2*pi*i*m/n);
 	   si=-sin(2*pi*i*m/n);
