@@ -1,0 +1,456 @@
+<DataBase>
+  <!--             -->
+  <!-- Nationstech -->
+  <!--             -->
+  
+  <!--         -->
+  <!-- N32G45x -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452CB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G45x_NRP_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452MB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G45x_NRP_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452RB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G45x_NRP_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452VB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G45x_NRP_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452CC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452MC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452QC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452RC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452VC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452CE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452ME" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452QE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452RE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G452VE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455CB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G45x_NRP_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455MB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G45x_NRP_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455RB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G45x_NRP_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455VB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G45x_NRP_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455CC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455MC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455RC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455VC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455CE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455ME" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455RE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G455VE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G457MC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G457RC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G457VC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G45x_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G457ME" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G457QE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G457RE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G457VE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G45X_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00014000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x1FFFF800" MaxSize="0x00000012" Loader="Devices/Nationstech/N32G45x_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32G4FR -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G4FRHC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G4FR_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G4FRKC" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00040000" Loader="Devices/Nationstech/N32G4FR_NRP_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G4FRHE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G4FR_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G4FRKE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G4FR_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G4FRME" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G4FR_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G4FRRE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32G4FR_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G4FR_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x1FFFF800" MaxSize="0x00000012" Loader="Devices/Nationstech/N32G4FR_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32WB452 -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32WB452CE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32WB452_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32WB452LE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32WB452_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32WB452RE" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00080000" Loader="Devices/Nationstech/N32WB452_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32WB452_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00024000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x1FFFF800" MaxSize="0x00000012" Loader="Devices/Nationstech/N32WB452_NRP_512K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32G43x -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G432G8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G432GB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G432K8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G432KB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G432C8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G432CB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G432R8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G432RB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G435K8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G435KB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G435C8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G435T8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G435CB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G435R8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G435RB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G435GB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G43X_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x1FFFF800" MaxSize="0x00000012" Loader="Devices/Nationstech/N32G43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32L43x -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L433K8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32L43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L433KB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32L43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L436C8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32L43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L436CB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32L43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L436R8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32L43x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L436RB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32L43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L436MB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00008000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32L43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L43X_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x1FFFF800" MaxSize="0x00000012" Loader="Devices/Nationstech/N32L43x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32L40x -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L403K8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32L40x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L403KB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32L40x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L406C8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32L40x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L406CB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32L40x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L406R8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32L40x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L406RB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32L40x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L406MB" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00006000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00020000" Loader="Devices/Nationstech/N32L40x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32L40X_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x1FFFF800" MaxSize="0x00000012" Loader="Devices/Nationstech/N32L40x_128.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32G032 -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G032F6" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G032x_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G032P6" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G032x_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G032P8" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G032x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G032K6" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G032x_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G032C8" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G032x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G032R8" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G032x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G032_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x08000000" MaxSize="0x0000200" Loader="Devices/Nationstech/N32G032x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32G030 -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G030F6" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G030x_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G030K6" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G030x_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G030K8" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G030x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G030C8" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G030x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G030_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x08000000" MaxSize="0x0000200" Loader="Devices/Nationstech/N32G030x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32G031 -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G031F6" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G031x_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G031K6" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G031x_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G031F8" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G031x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G031K8" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G031x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G031C8" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G031x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G031_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M0" WorkRAMAddr="0x20000000" WorkRAMSize="0x00002000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x08000000" MaxSize="0x0000200" Loader="Devices/Nationstech/N32G031x_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+  <!--         -->
+  <!-- N32G430 -->
+  <!--         -->
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430C6" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G430_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430C8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G430_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430K6" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G430_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430K8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G430_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430G6" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G430_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430G8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G430_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430F6" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00008000" Loader="Devices/Nationstech/N32G430_32.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430F8" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Internal Flash" BaseAddr="0x08000000" MaxSize="0x00010000" Loader="Devices/Nationstech/N32G430_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+<Device>
+<ChipInfo Vendor="Nationstech" Name="N32G430_UNLOCKOPT" Core="JLINK_CORE_CORTEX_M4" WorkRAMAddr="0x20000000" WorkRAMSize="0x00004000"/>
+<FlashBankInfo Name="Option Byte" BaseAddr="0x08000000" MaxSize="0x00000010" Loader="Devices/Nationstech/N32G430_64.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+</Device>
+</DataBase>
