@@ -78,6 +78,9 @@ vectors:					@向量表
 	.word aaa +1 @51 _can_rx1 +1
 	.word aaa +1 @52 _can_sce +1
 _start:
+	
+
+	
 @	ldr r0, = 0xe000ed88
 @	ldr r1, = 0x00f00000
 @	str r1, [r0]		@开FPU协处理器
@@ -1071,7 +1074,7 @@ __deng_adc_zhunbeihao2:
 	ldr r1, = lvbo_youyi
 	movs r2, # 440
 	str r2, [r0]
-	movs r2, # 16
+	movs r2, # 14
 	str r2, [r1]
 
 	       ldr r0, = 0xe000e010
@@ -1448,11 +1451,11 @@ __huan_dang:
 	ldr r0, = z_fudu	
 	ldr r0, [r0]
 	lsrs r0, r0, # 4
-	ldr r3, =  1000
+	ldr r3, =  300
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __dang_wei_jian
-	ldr r3, =  3000
+	ldr r3, =  1000
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __zi_dong_dang_wei_fan_hui
@@ -1460,9 +1463,9 @@ __huan_dang:
 	ldr r1, [r0]
 	adds r1, r1, # 1
 	str r1, [r0]
-	cmp r1, # 24
+	cmp r1, # 7
 	bne __zi_dong_dang_wei_fan_hui
-	movs r1, # 23
+	movs r1, # 6
 	str r1, [r0]
 	b __zi_dong_dang_wei_fan_hui
 __dang_wei_jian:
@@ -4594,6 +4597,8 @@ __qiehuan_shangbi:
 	str r3, [r2, # 0x14]
 __jisuan_shangbi:
 	bl __dft_jisuan
+	asrs r0, r0, # 3
+	asrs r1, r1, # 3
 	mvns r0, r0
 	adds r0, r0, # 1
 	mvns r1, r1
@@ -4635,6 +4640,8 @@ __qiehuan_xiabi:
 	str r3, [r2, # 0x14]
 __jisuan_xiabi:
 	bl __dft_jisuan
+	asrs r0, r0, # 3
+	asrs r1, r1, # 3
 	ldr r2, = shangbi_rr
 	ldr r4, = shangbi_ii
 	str r0, [r2]
@@ -4661,10 +4668,10 @@ __jisuan_xiabi:
 	ldr r1, [r5]
 	ldr r2, [r6]
 	ldr r3, [r7]
-	asrs r0, r0, # 6
-	asrs r1, r1, # 6
-	asrs r2, r2, # 6
-	asrs r3, r3, # 6
+	asrs r0, r0, # 3
+	asrs r1, r1, # 3
+	asrs r2, r2, # 3
+	asrs r3, r3, # 3
 	bl __jisuan_z_fudu
 	ldr r1, = z_fudu
 	str r0, [r1]
@@ -4784,12 +4791,12 @@ pinlv_xianshi_biao:
 	.word pinlv_10khz
 	.word pinlv_100khz
 zukang_dianzu_biao:
-	.int 33000,33000,33000,33000,10000,10000,10000,10000
+	.int 33000,33000,33000,33000,33000,33000,33000,10000
 	.int 30000,60000,10000,30000,60000,10000,30000,60000
 	.int 10000,30000,60000,10000,18000,30000,60000,18000
 	.align 4
 rs_danwei_biao:	@31=毫欧，91=欧，81=千欧，41=兆欧
-	.byte 31,31,31,31,91,91,91,91
+	.byte 31,31,31,91,91,91,91,91
 	.byte 91,91,81,81,81,81,81,81
 	.byte 81,81,81,41,41,41,41,41
 zhucanshu_i_danwei_biao:
@@ -4823,7 +4830,7 @@ xs_xiaoshudian_100hz:
 xs_xiaoshudian_1khz:
 xs_xiaoshudian_10khz:
 xs_xiaoshudian_100khz:
-	.byte 1,2,3,4,2,2,2,3
+	.byte 1,2,3,4,2,2,1,3
 	.byte 3,3,1,1,1,2,2,2
 	.byte 3,3,3,  1,1,1,1,2
 	
@@ -4971,7 +4978,7 @@ zukang_xiaoshudian_100hz:
 zukang_xiaoshudian_1khz:
 zukang_xiaoshudian_10khz:
 zukang_xiaoshudian_100khz:		@zkd
-	.byte 1,2,3,4,2,2,2,3
+	.byte 1,2,3,1,2,3,4,3
 	.byte 3,3,1,1,1,2,2,2
 	.byte 3,3,3,  1,1,1,1,2
 	.align 4
