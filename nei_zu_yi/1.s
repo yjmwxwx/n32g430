@@ -1,5 +1,5 @@
 	@单片机：N32G430C8L7
-	@功能:lcr数字电桥
+	@功能:电池内阻仪
 	@作者：yjmwxwx
 	@时间：20220903
 	@编译器：arm-none-eabi
@@ -350,7 +350,7 @@ __pinlv_dangwei_chushihua:	@plsz
 	str r1, [r0]
 	bl __pinlv_shezhi
 	ldr r0, = liangcheng
-	movs r1, # 0
+	movs r1, # 6
 	str r1, [r0]
 	
 __pinlv_xianshi:
@@ -509,6 +509,7 @@ __ren_wu_diao_du:
 
 	
 ting:
+	bl __xianshi_mansu_kaiguan
 @	bl __xianshi_shangxia_bi
 @	b __ren_wu_diao_du
 
@@ -1455,7 +1456,7 @@ __huan_dang:
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __dang_wei_jian
-	ldr r3, =  1000
+	ldr r3, =  3000
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __zi_dong_dang_wei_fan_hui
@@ -1507,6 +1508,21 @@ __xianshi_dangwei:
 	movw r2, # 0x7701         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	pop {r0-r3,pc}
+
+__xianshi_mansu_kaiguan:
+	push {r0-r3,lr}
+	ldr r0, = mansu_kaiguan
+	movs r1, # 1             @转换几个字符
+	ldr r0, [r0]
+	ldr r2, = asciibiao
+	movs r3, # 0xff             @小数点位置
+	bl __zhuanascii
+	ldr r0, = asciibiao
+	movs r1, # 1        @显示几个字符
+	movw r2, # 0x7700         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	pop {r0-r3,pc}
+
 	
 __xianshi_zukang:
 	@入口R0=R，R1=I
@@ -4566,7 +4582,7 @@ aaa:
 	bx lr
 __systick_zhongduan:				@syzd
 	push {r0-r12,lr}
-__suan_dft:
+__suan_dft:                       
 __deng_dma_wan:
 	ldr r0, = shangxiabi_qiehuan
 	ldr r1, [r0]
@@ -4660,6 +4676,74 @@ __jisuan_xiabi:
 	ldr r2, = shangbi_r
 	str r0, [r2]
 
+@	b __kuaisu_dangwei
+
+
+
+	
+	ldr r0, = mansu_kaiguan
+	ldr r1, [r0]
+	cmp r1, # 1
+	bne __kuaisu_dangwei
+__mansu_dangwei:
+	ldr r0, = kuaisu_dangwei_fazhi
+	movs r1, # 0
+	str r1, [r0]
+	ldr r0, = mansu_dangwei_yanshi
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp  r1, # 440
+	bne __systick_fanhui
+	movs r1, # 0
+	str r1, [r0]
+        ldr r4, = shangbi_r
+	ldr r5, = shangbi_i
+	ldr r6, = xiabi_r
+	ldr r7, = xiabi_i
+	ldr r0, [r4]
+	ldr r1, [r5]
+	ldr r2, [r6]
+	ldr r3, [r7]
+        bl __jisuan_z_fudu
+	ldr r1, = z_fudu
+	str r0, [r1]
+	bl __zidong_dangwei
+	ldr r0, = liangcheng
+	ldr r1, = shangci_dangwei
+	ldr r3, [r0]
+	ldr r2, [r1]
+	subs r2, r2, r3
+	bpl __jiance_mansu_huandang
+	mvns r2, r2
+	adds r2, r2, # 1
+__jiance_mansu_huandang:
+	cmp r2,  # 0
+	bhi __qiehuan_kuaisu
+	b __jixu_mansu
+__qiehuan_kuaisu:
+	str r3, [r1]
+	ldr r0, = mansu_kaiguan
+	movs r1, # 0
+	str r1, [r0]
+	b __systick_fanhui
+__jixu_mansu:
+	str r3, [r1]
+	ldr r0, = mansu_kaiguan
+	movs r1, # 1
+	str r1, [r0]
+	b __systick_fanhui
+	
+	
+__kuaisu_dangwei:
+	ldr r0, = kuaisu_dangwei_yanshi
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 8
+	bne __systick_fanhui
+	movs r1, # 0
+	str r1, [r0]
 	ldr r4, = shangbi_rr
 	ldr r5, = shangbi_ii
 	ldr r6, = xiabi_rr
@@ -4668,34 +4752,42 @@ __jisuan_xiabi:
 	ldr r1, [r5]
 	ldr r2, [r6]
 	ldr r3, [r7]
-	asrs r0, r0, # 3
-	asrs r1, r1, # 3
-	asrs r2, r2, # 3
-	asrs r3, r3, # 3
+	asrs r0, r0, # 2
+	asrs r1, r1, # 2
+	asrs r2, r2, # 2
+	asrs r3, r3, # 2	
 	bl __jisuan_z_fudu
 	ldr r1, = z_fudu
 	str r0, [r1]
-@	bl __zidong_dangwei
+	bl __zidong_dangwei
 	ldr r0, = liangcheng
 	ldr r1, = shangci_dangwei
 	ldr r3, [r0]
 	ldr r2, [r1]
 	subs r2, r2, r3
 	bpl __jiance_huandang
+	mvns r2, r2
+	adds r2, r2, # 1
 __jiance_huandang:
-	cmp r2,  # 1
-	bhi __kuaisu_kai
-	b __mansu_kai
+	cmp r2,  # 0
+	beq __mansu_kai
 __kuaisu_kai:
 	str r3, [r1]
 	ldr r0, = mansu_kaiguan
 	movs r1, # 0
 	str r1, [r0]
-	ldr r0, = mansu_yanshi
-	ldr r1, = 400
+	ldr r0, = kuaisu_dangwei_fazhi
+	ldr r1, [r0]
+	adds r1, r1, # 1
 	str r1, [r0]
+	cmp r1, # 20
+	bhi __kuaisu_fazhi_dao
 	b __systick_fanhui
+__kuaisu_fazhi_dao:
+	movs r1, # 0
+	str r1, [r0]
 __mansu_kai:
+	str r3, [r1]
 	ldr r0, = mansu_kaiguan
 	movs r1, # 1
 	str r1, [r0]
@@ -4717,6 +4809,9 @@ __systick_fanhui:
 	.equ pinlv,			0x2000004c
 
 	@@不保存
+	.equ kuaisu_dangwei_fazhi,	0x20000154
+	.equ kuaisu_dangwei_yanshi,	0x20000158
+	.equ mansu_dangwei_yanshi,	0x2000015c
 	.equ qingling_z_r,		0x20000160
 	.equ qingling_z_i,		0x20000164
 	.equ dft_chongfu_jishu,		0x20000168
@@ -4830,9 +4925,10 @@ xs_xiaoshudian_100hz:
 xs_xiaoshudian_1khz:
 xs_xiaoshudian_10khz:
 xs_xiaoshudian_100khz:
-	.byte 1,2,3,4,2,2,1,3
+	.byte 1,2,3,1,2,3,4,3
 	.byte 3,3,1,1,1,2,2,2
 	.byte 3,3,3,  1,1,1,1,2
+	
 	
 cs_danwei:
 	@92=F,42=MF,02=UF,52=nf,62=pf
