@@ -350,7 +350,7 @@ __pinlv_dangwei_chushihua:	@plsz
 	str r1, [r0]
 	bl __pinlv_shezhi
 	ldr r0, = liangcheng
-	movs r1, # 6
+	movs r1, # 0
 	str r1, [r0]
 	
 __pinlv_xianshi:
@@ -1016,13 +1016,13 @@ __pinlv_1khz:
 	str r1, [r0]
 	movs r1, # 20
 	str r1, [r2]
-	
+
 	ldr r0, = cos_sin_shuliang
 	movs r1, # 100
 	str r1, [r0]
-	
-	
-	
+
+
+
 	@__dma_chushihua:
 	ldr r0, = 0x40020000
 	movs r1, # 0
@@ -1073,17 +1073,17 @@ __deng_adc_zhunbeihao2:
 
 	ldr r0, = lvbo_changdu
 	ldr r1, = lvbo_youyi
-	movs r2, # 440
+	movs r2, # 400
 	str r2, [r0]
 	movs r2, # 14
 	str r2, [r1]
 
-	       ldr r0, = 0xe000e010
-	       ldr r1, = 127999
-	       str r1, [r0, # 4]
-	       str r1, [r0, # 8]
-	       movs r1, # 0x07
-	       str r1, [r0]    @systick 开
+	ldr r0, = 0xe000e010
+	ldr r1, = 127999
+	str r1, [r0, # 4]
+	str r1, [r0, # 8]
+	movs r1, # 0x07
+	str r1, [r0]    @systick 开
 
 
 	@__tim3chushihua:
@@ -1117,6 +1117,7 @@ __deng_adc_zhunbeihao2:
 	str r5, [r4]
 	str r2, [r3]
 	pop {r0-r5,pc}
+
 	
 __pinlv_10khz:
 	ldr r0, = 0x40023418
@@ -1452,11 +1453,11 @@ __huan_dang:
 	ldr r0, = z_fudu	
 	ldr r0, [r0]
 	lsrs r0, r0, # 4
-	ldr r3, =  300
+	ldr r3, =  600
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __dang_wei_jian
-	ldr r3, =  3000
+	ldr r3, =  6000
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __zi_dong_dang_wei_fan_hui
@@ -4590,14 +4591,14 @@ __deng_dma_wan:
 	str r1, [r0]
 	cmp r1, # 2
 	beq __qiehuan_xiabi
-@	cmp r1, # 2
-@	beq __jisuan_shangbi
-@	cmp r1, # 3
-@	beq __qiehuan_xiabi
-@	cmp r1, # 4
-@	beq __jisuan_xiabi
+	@	cmp r1, # 2
+	@	beq __jisuan_shangbi
+	@	cmp r1, # 3
+	@	beq __qiehuan_xiabi
+	@	cmp r1, # 4
+	@	beq __jisuan_xiabi
 __qiehuan_shangbi:
-        ldr r0, = 0x40023800
+	ldr r0, = 0x40023800
 	movs r1, # 1
 	lsls r1, r1, # 16
 	ldr r3, = liangcheng
@@ -4613,8 +4614,8 @@ __qiehuan_shangbi:
 	str r3, [r2, # 0x14]
 __jisuan_shangbi:
 	bl __dft_jisuan
-	asrs r0, r0, # 3
-	asrs r1, r1, # 3
+	asrs r0, r0, # 2
+	asrs r1, r1, # 2
 	mvns r0, r0
 	adds r0, r0, # 1
 	mvns r1, r1
@@ -4640,7 +4641,7 @@ __jisuan_shangbi:
 __qiehuan_xiabi:
 	movs r1, # 0
 	str r1, [r0]
-	
+
 	ldr r0, = 0x40023800
 	movs r1, # 1
 	ldr r3, = liangcheng
@@ -4656,8 +4657,8 @@ __qiehuan_xiabi:
 	str r3, [r2, # 0x14]
 __jisuan_xiabi:
 	bl __dft_jisuan
-	asrs r0, r0, # 3
-	asrs r1, r1, # 3
+	asrs r0, r0, # 2
+	asrs r1, r1, # 2
 	ldr r2, = shangbi_rr
 	ldr r4, = shangbi_ii
 	str r0, [r2]
@@ -4668,14 +4669,14 @@ __jisuan_xiabi:
 	bl __lv_bo_qi
 	ldr r2, = shangbi_i
 	str r0, [r2]
-	
+
 	mov r1, r4
-        ldr r2, = lvboqizhizhen1
+	ldr r2, = lvboqizhizhen1
 	ldr r0, =lvboqihuanchong1
 	bl __lv_bo_qi
 	ldr r2, = shangbi_r
 	str r0, [r2]
-
+	
 @	b __kuaisu_dangwei
 
 
@@ -4886,7 +4887,7 @@ pinlv_xianshi_biao:
 	.word pinlv_10khz
 	.word pinlv_100khz
 zukang_dianzu_biao:
-	.int 33000,33000,33000,33000,33000,33000,33000,10000
+	.int 3300,3300,3300,3300,3300,3300,3300,10000
 	.int 30000,60000,10000,30000,60000,10000,30000,60000
 	.int 10000,30000,60000,10000,18000,30000,60000,18000
 	.align 4
@@ -4925,9 +4926,10 @@ xs_xiaoshudian_100hz:
 xs_xiaoshudian_1khz:
 xs_xiaoshudian_10khz:
 xs_xiaoshudian_100khz:
-	.byte 1,2,3,1,2,3,4,3
+	.byte 2,3,4,2,3,4,5,3
 	.byte 3,3,1,1,1,2,2,2
 	.byte 3,3,3,  1,1,1,1,2
+	
 	
 	
 cs_danwei:
@@ -5074,7 +5076,7 @@ zukang_xiaoshudian_100hz:
 zukang_xiaoshudian_1khz:
 zukang_xiaoshudian_10khz:
 zukang_xiaoshudian_100khz:		@zkd
-	.byte 1,2,3,1,2,3,4,3
+	.byte 2,3,4,2,3,4,5,3
 	.byte 3,3,1,1,1,2,2,2
 	.byte 3,3,3,  1,1,1,1,2
 	.align 4
