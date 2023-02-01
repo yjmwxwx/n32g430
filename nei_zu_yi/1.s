@@ -159,7 +159,10 @@ _neicunqinglingxunhuan:
 	str r1, [r0]
 	cmp r0, r2
 	bne _neicunqinglingxunhuan
-
+        ldr r0, = pinlv
+	movs r1, # 1
+	str r1, [r0]
+	
 _waishezhongduan:	                       @外设中断
 	@0xE000E100    0-31  写1开，写0没效
 	@0XE000E180    0-31 写1关，写0没效
@@ -204,7 +207,7 @@ __io_shezhi:
 	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	@PA
 	ldr r0, = 0x40023400
-	ldr r1, = 0x6956555f
+	ldr r1, = 0x69565553
 	str r1, [r0]
 	movw r1, # 0x1e00
 	str r1, [r0, # 0x04]
@@ -220,7 +223,7 @@ __io_shezhi:
 	ldr r0, = 0x40023800
 	ldr r1, = 0x5559bd
 	str r1, [r0]
-	movw r1, # 0xe40
+	movs r1, # 0x40
 	str r1, [r0, # 0x04]
 	movw r1, # 0xffff
 	str r1, [r0, # 0x08]
@@ -345,12 +348,12 @@ __shezhi_pinlv_jiance:
 	
 __pinlv_dangwei_chushihua:	@plsz
 @	bl __lcd_qingping
-	ldr r0, = pinlv
-	movs r1, # 1
-	str r1, [r0]
+@	ldr r0, = pinlv
+@	movs r1, # 3
+@	str r1, [r0]
 	bl __pinlv_shezhi
 	ldr r0, = liangcheng
-	movs r1, # 0
+	movs r1, # 3
 	str r1, [r0]
 	
 __pinlv_xianshi:
@@ -4598,9 +4601,6 @@ __deng_dma_wan:
 	@	cmp r1, # 4
 	@	beq __jisuan_xiabi
 __qiehuan_shangbi:
-	ldr r0, = 0x40023800
-	movs r1, # 1
-	lsls r1, r1, # 16
 	ldr r3, = liangcheng
 	ldr r4, = shangbi_liangcheng
 	ldr r3, [r3]
@@ -4610,7 +4610,6 @@ __qiehuan_shangbi:
 	lsrs r5, r5, # 8
 	lsls r5, r5, # 8
 	orrs r3, r3, r5
-	str r1, [r0, # 0x18]
 	str r3, [r2, # 0x14]
 __jisuan_shangbi:
 	bl __dft_jisuan
@@ -4642,8 +4641,6 @@ __qiehuan_xiabi:
 	movs r1, # 0
 	str r1, [r0]
 
-	ldr r0, = 0x40023800
-	movs r1, # 1
 	ldr r3, = liangcheng
 	ldr r4, = xiabi_liangcheng
 	ldr r3, [r3]
@@ -4653,7 +4650,8 @@ __qiehuan_xiabi:
 	lsrs r5, r5, # 8
 	lsls r5, r5, # 8
 	orrs r3, r3, r5
-	str r1, [r0, # 0x18]
+	movs r5, # 0x04
+	orrs r3, r3, r5
 	str r3, [r2, # 0x14]
 __jisuan_xiabi:
 	bl __dft_jisuan
