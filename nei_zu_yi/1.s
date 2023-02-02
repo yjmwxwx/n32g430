@@ -1456,11 +1456,11 @@ __huan_dang:
 	ldr r0, = z_fudu	
 	ldr r0, [r0]
 	lsrs r0, r0, # 4
-	ldr r3, =  600
+	ldr r3, =  800
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __dang_wei_jian
-	ldr r3, =  6000
+	ldr r3, =  8000
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __zi_dong_dang_wei_fan_hui
@@ -4735,11 +4735,11 @@ __jixu_mansu:
 	
 	
 __kuaisu_dangwei:
-	ldr r0, = kuaisu_dangwei_yanshi
-	ldr r1, [r0]
-	adds r1, r1, # 1
-	str r1, [r0]
-	cmp r1, # 8
+ 	ldr r0, = kuaisu_dangwei_yanshi
+ 	ldr r1, [r0]
+ 	adds r1, r1, # 1
+ 	str r1, [r0]
+ 	cmp r1, # 8
 	bne __systick_fanhui
 	movs r1, # 0
 	str r1, [r0]

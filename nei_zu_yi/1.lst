@@ -1542,11 +1542,11 @@ ARM GAS  1.s 			page 1
  1456 0c02 9A48     		ldr r0, = z_fudu	
  1457 0c04 0068     		ldr r0, [r0]
  1458 0c06 0009     		lsrs r0, r0, # 4
- 1459 0c08 4FF41673 		ldr r3, =  600
+ 1459 0c08 4FF44873 		ldr r3, =  800
  1460 0c0c 1B09     		lsrs r3, r3, # 4
  1461 0c0e 9842     		cmp r0, r3
  1462 0c10 0DD3     		bcc __dang_wei_jian
- 1463 0c12 41F27073 		ldr r3, =  6000
+ 1463 0c12 4FF4FA53 		ldr r3, =  8000
  1464 0c16 1B09     		lsrs r3, r3, # 4
  1465 0c18 9842     		cmp r0, r3
  1466 0c1a 10D3     		bcc __zi_dong_dang_wei_fan_hui
@@ -5016,11 +5016,11 @@ ARM GAS  1.s 			page 1
  4735              		
  4736              		
  4737              	__kuaisu_dangwei:
- 4738 2aa6 3748     		ldr r0, = kuaisu_dangwei_yanshi
- 4739 2aa8 0168     		ldr r1, [r0]
- 4740 2aaa 0131     		adds r1, r1, # 1
- 4741 2aac 0160     		str r1, [r0]
- 4742 2aae 0829     		cmp r1, # 8
+ 4738 2aa6 3748     	 	ldr r0, = kuaisu_dangwei_yanshi
+ 4739 2aa8 0168     	 	ldr r1, [r0]
+ 4740 2aaa 0131     	 	adds r1, r1, # 1
+ 4741 2aac 0160     	 	str r1, [r0]
+ 4742 2aae 0829     	 	cmp r1, # 8
  4743 2ab0 2ED1     		bne __systick_fanhui
  4744 2ab2 0021     		movs r1, # 0
  4745 2ab4 0160     		str r1, [r0]
