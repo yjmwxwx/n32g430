@@ -512,141 +512,14 @@ __ren_wu_diao_du:
 
 	
 ting:
-	bl __xianshi_mansu_kaiguan
+@	bl __xianshi_mansu_kaiguan
 @	bl __xianshi_shangxia_bi
 @	b __ren_wu_diao_du
-
-	
-	ldr r0, = mansu_yanshi
-        ldr r0, = pinlv
-	ldr r0, [r0]
-	cmp r0, # 3
-	bcs __f_100khz
-	
-	
-@	ldr r0, = mansu_yanshi
-@	ldr r1, [r0]
-@	subs r1, r1, # 1
-@	bpl __kuaisu
-	b __mansu
-
-__f_100khz:
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	bl __zidong_dangwei
-__qiehuan_shangbi1:
-	
-	ldr r0, = 0x40023800
-	movs r1, # 1
-	lsls r1, r1, # 16
-	ldr r3, = liangcheng
-	ldr r4, = shangbi_liangcheng
-	ldr r3, [r3]
-	ldr r2, = 0x40023400
-	ldr r5, [r2, 0x14]
-	ldrb r3, [r4, r3]
-	lsrs r5, r5, # 8
-	lsls r5, r5, # 8
-	orrs r3, r3, r5
-	str r1, [r0, # 0x18]
-	str r3, [r2, # 0x14]
-
-        mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	mov r0, r0
-	ldr r0, = 120000
-y:
-	subs r0, r0, # 1
-	bne y
-
-	bl __dft_jisuan
-	mvns r0, r0
-	adds r0, r0, # 1
-	mvns r1, r1
-	adds r1, r1, # 1
-	push {r0-r1}
-	
-	mov r4, r0
-	ldr r2, = lvboqizhizhen2
-	ldr r0, =lvboqihuanchong2
-	bl __lv_bo_qi
-	ldr r2, = shangbi_i
-	str r0, [r2]
-
-	mov r1, r4
-	ldr r2, = lvboqizhizhen3
-	ldr r0, =lvboqihuanchong3
-	bl __lv_bo_qi
-	ldr r2, = shangbi_r
-	str r0, [r2]
-
-__qiehuan_xiabi1:
-	ldr r0, = 0x40023800
-	movs r1, # 1
-@	lsls r1, r1, # 16
-	ldr r3, = liangcheng
-	ldr r4, = xiabi_liangcheng
-	ldr r3, [r3]
-	ldr r2, = 0x40023400
-	ldr r5, [r2, # 0x14]
-	ldrb r3, [r4, r3]
-	lsrs r5, r5, # 8
-	lsls r5, r5, # 8
-	orrs r3, r3, r5
-	str r1, [r0, # 0x18]
-	str r3, [r2, # 0x14]
-	
-
-	
-	ldr r0, = 120000
-y1:	
-	subs r0, r0, # 1
-	bne y1
-	bl __dft_jisuan
-	push {r0-r1}
-	mov r4, r0
-	ldr r2, = lvboqizhizhen
-	ldr r0, =lvboqihuanchong
-	bl __lv_bo_qi
-	ldr r2, = xiabi_i
-	str r0, [r2]
-
-	mov r1, r4
-	ldr r2, = lvboqizhizhen1
-	ldr r0, =lvboqihuanchong1
-	bl __lv_bo_qi
-	ldr r2, = xiabi_r
-	str r0, [r2]
-	
-	pop {r0-r3}	@r0=x_rr,r1=x_ii,r2=r_rr,r3=r_ii
-	asrs r0, r0, # 6
-	asrs r1, r1, # 6
-	asrs r2, r2, # 6
-	asrs r3, r3, # 6
-	ldr r4, = xiabi_rr
-	str r0, [r4]
-	str r1, [r4, # 0x04]
-	str r2, [r4, # 0x08]
-	str r3, [r4, # 0x0c]
-	bl __jisuan_z_fudu1
-	ldr r6, = z_fudu
-	str r0, [r6]
+	bl __adc_jiance
 
 __mansu:
-	movs r1, # 0
-	str r1, [r0]
-
 	
+	bl __xianshi_adc_jiance
 	@	bl __xianshi_shangxia_bi
 	bl __xianshi_zhu_danwei
 	bl __xianshi_z_fudu
@@ -1449,6 +1322,33 @@ __xianshi_zhu_danwei:	@zdw
 	ldr r4, = danweibiao
 	bl __xie_alabo
 	pop {r0-r4,pc}
+
+__adc_jiance:
+	push {r0-r4}
+	ldr r0, = 0x20000200
+	movw r3, # 0xff0
+	movs r4, # 0
+	ldr r1, = 4000
+	lsls r1, r1, # 1
+__adc_jiance_xunhuan:
+	ldrh r2, [r0, r1]
+	cmp r2, r3
+	bcc __adc_yiwei
+	adds r4, r4, # 1
+__adc_yiwei:
+	subs r1, r1, # 2
+	bne __adc_jiance_xunhuan
+	ldr r0, = adc_jiance
+	str r4, [r0]
+	cmp r4, # 1000
+	bcc __adc_jiance_fanhui
+	ldr r0, = liangcheng
+	movs r1, # 3
+	str r1, [r0]
+__adc_jiance_fanhui:
+	pop {r0-r4}
+	bx lr
+
 	
 __zidong_dangwei:
 	push {r0-r3,lr}
@@ -1456,11 +1356,11 @@ __huan_dang:
 	ldr r0, = z_fudu	
 	ldr r0, [r0]
 	lsrs r0, r0, # 4
-	ldr r3, =  800
+	ldr r3, =  500
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __dang_wei_jian
-	ldr r3, =  8000
+	ldr r3, =  5000
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __zi_dong_dang_wei_fan_hui
@@ -1484,22 +1384,48 @@ __dang_wei_jian:
 	str r1, [r0]
 __zi_dong_dang_wei_fan_hui:
 	pop {r0-r3,pc}
-		
-__xianshi_z_fudu:
+__xianshi_adc_jiance:
 	push {r0-r3,lr}
-        ldr r0, = z_fudu
-	movs r1, # 4             @转换几个字符
+	ldr r0, = adc_jiance
+	movs r1, # 7            @转换几个字符
 	ldr r0, [r0]
 	ldr r2, = asciibiao
 	movs r3, # 0xff             @小数点位置
 	bl __zhuanascii
 	ldr r0, = asciibiao
-	movs r1, # 4           @显示几个字符
-	movw r2, # 0x5901         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	movs r1, # 7           @显示几个字符
+	movw r2, # 0x5900         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	pop {r0-r3,pc}
 
+	
+__xianshi_z_fudu:
+	push {r0-r3,lr}
+        ldr r0, = z_fudu
+	movs r1, # 7             @转换几个字符
+	ldr r0, [r0]
+	ldr r2, = asciibiao
+	movs r3, # 0xff             @小数点位置
+	bl __zhuanascii
+	ldr r0, = asciibiao
+	movs r1, # 7           @显示几个字符
+	movw r2, # 0x5901         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	pop {r0-r3,pc}
 __xianshi_dangwei:
+	push {r0-r2,lr}
+	ldr r0, = liangcheng
+	ldr r1, = dangwei_ascii
+	ldr r0, [r0]
+	lsls r0, r0, # 2
+	ldr r0, [r1, r0]
+	movs r1, # 6           @显示几个字符
+	movw r2, # 0x0001         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	pop {r0-r2,pc}
+	
+	
+__xianshi_dangwei1:
 	push {r0-r3,lr}
 	ldr r0, = liangcheng
 	movs r1, # 2             @转换几个字符
@@ -4808,6 +4734,7 @@ __systick_fanhui:
 	.equ pinlv,			0x2000004c
 
 	@@不保存
+	.equ adc_jiance,		0x20000150
 	.equ kuaisu_dangwei_fazhi,	0x20000154
 	.equ kuaisu_dangwei_yanshi,	0x20000158
 	.equ mansu_dangwei_yanshi,	0x2000015c
@@ -5077,7 +5004,31 @@ zukang_xiaoshudian_100khz:		@zkd
 	.byte 2,3,4,2,3,4,5,3
 	.byte 3,3,1,1,1,2,2,2
 	.byte 3,3,3,  1,1,1,1,2
+
 	.align 4
+dangwei_ascii:
+	.word haoou3.33
+	.word haoou33.3
+	.word haoou333
+	.word ou3.33
+	.word ou33.3
+	.word ou333
+	.word ou3333
+
+haoou3.33:
+	.ascii "3.33mR "
+haoou33.3:
+	.ascii "33.3mR"
+haoou333:
+	.ascii "333 mR"
+ou3.33:
+	.ascii "3.33 R"
+ou33.3:
+	.ascii "33.3 R"
+ou333:
+	.ascii " 333 R"
+ou3333:
+	.ascii "3333 R"
 xs_:
 	.ascii "Xs"
 rs_:
