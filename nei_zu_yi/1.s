@@ -1342,9 +1342,9 @@ __adc_yiwei:
 	str r4, [r0]
 	cmp r4, # 1000
 	bcc __adc_jiance_fanhui
-	ldr r0, = liangcheng
-	movs r1, # 3
-	str r1, [r0]
+@	ldr r0, = liangcheng
+@	movs r1, # 3
+@	str r1, [r0]
 __adc_jiance_fanhui:
 	pop {r0-r4}
 	bx lr
@@ -1356,11 +1356,11 @@ __huan_dang:
 	ldr r0, = z_fudu	
 	ldr r0, [r0]
 	lsrs r0, r0, # 4
-	ldr r3, =  500
+	ldr r3, =  600
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __dang_wei_jian
-	ldr r3, =  5000
+	ldr r3, =  6000
 	lsrs r3, r3, # 4
 	cmp r0, r3
 	bcc __zi_dong_dang_wei_fan_hui
