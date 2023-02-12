@@ -1,7 +1,7 @@
 	@单片机：N32G430C8L7
 	@功能:电池内阻仪
 	@作者：yjmwxwx
-	@时间：20220903
+	@时间：20230210
 	@编译器：arm-none-eabi
 	.thumb
 	.syntax unified
@@ -78,9 +78,6 @@ vectors:					@向量表
 	.word aaa +1 @51 _can_rx1 +1
 	.word aaa +1 @52 _can_sce +1
 _start:
-	
-
-	
 @	ldr r0, = 0xe000ed88
 @	ldr r1, = 0x00f00000
 @	str r1, [r0]		@开FPU协处理器
@@ -159,9 +156,6 @@ _neicunqinglingxunhuan:
 	str r1, [r0]
 	cmp r0, r2
 	bne _neicunqinglingxunhuan
-        ldr r0, = pinlv
-	movs r1, # 1
-	str r1, [r0]
 	
 _waishezhongduan:	                       @外设中断
 	@0xE000E100    0-31  写1开，写0没效
@@ -171,7 +165,8 @@ _waishezhongduan:	                       @外设中断
 	@       ldr r0, =  0xe000e100
 	@       ldr r1, = 0x800 @tim4
 	@       str r1, [r0]
-	
+
+
 __io_shezhi:
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 	@   pa=0x40023400,    pb=0x40023800,  pc=0x40023c00,  pd=0x40024000
@@ -221,9 +216,9 @@ __io_shezhi:
 	
 	@PB
 	ldr r0, = 0x40023800
-	ldr r1, = 0x5559bd
+	ldr r1, = 0x51983
 	str r1, [r0]
-	movs r1, # 0x40
+	movw r1, # 0xf040
 	str r1, [r0, # 0x04]
 	movw r1, # 0xffff
 	str r1, [r0, # 0x08]
@@ -237,11 +232,6 @@ __io_shezhi:
 	str r1, [r0, # 0x18]
 	
 	
-@	ldr r2, = shezhi_pinlv
-@	ldr r1, [r2]
-@	cmp r1, # 1
-@	bne __spi_chushihua
-@	b __pinlv_dangwei_chushihua
 
 __spi_chushihua:
 	ldr r0, = 0x40013000
@@ -294,57 +284,6 @@ __lcd_chushihua:
 
 	bl __lcd_qingping
 	b __pinlv_dangwei_chushihua
-
-	ldr r0, = shezhi_pinlv
-	ldr r1, [r0]
-	cmp r1, # 1
-	beq __kaiji
-	ldr r1, = 5000000
-__kaiji_yanshi:
-	bl __an_jian
-	cmp r0, # 0
-	beq __guan_ji_le
-	subs r1, r1, # 1
-	bne __kaiji_yanshi
-        ldr r0, = 0x40023800
-	movw r1, # 0x100
-	str r1, [r0, # 0x18]
-        ldr r0, = yjmwxwx
-	movs r1, # 16           @显示几个字符
-	movw r2, # 0x0000         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
-	bl __xie_ascii
-	ldr r5, = 10000
-__kai_ji_yan_shi:
-	movs r1, # 6             @转换几个字符
-	mov r0, r5
-	ldr r2, = asciibiao
-	movs r3, # 0xff             @小数点位置
-	bl __zhuanascii
-	ldr r0, = asciibiao
-	movs r1, # 6           @显示几个字符
-	movw r2, # 0x0001         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
-	bl __xie_ascii
-	subs r5, r5, # 1
-	bne __kai_ji_yan_shi
-	bl __lcd_qingping
-	b __shezhi_pinlv_jiance
-__kaiji:
-	ldr r0, = 0x40023800
-	movw r1, # 0x100
-	str r1, [r0, # 0x18]
-	b __shezhi_pinlv_jiance
-__guan_ji_le:
-	ldr r0, = 0x40023800
-	movw r1, # 0x100
-	lsls r1, r1, # 16
-	str r1, [r0, # 0x18]
-	bkpt # 88
-__shezhi_pinlv_jiance:	
-@	ldr r0, = shezhi_pinlv
-@	ldr r0, [r0]
-@	cmp r0, # 1
-@	beq __pinlv_dangwei_chushihua
-@	b __pinlv_xianshi
 	
 __pinlv_dangwei_chushihua:	@plsz
 @	bl __lcd_qingping
@@ -366,14 +305,37 @@ __pinlv_xianshi:
 	movw r2, # 0x0000         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 
+	ldr r0, = zidong_dangwei_kaiguan
+	ldr r1, [r0]
+	cmp r1, # 1
+	beq an_jian
+        ldr r0, = zidong
+	movs r1, # 6           @显示几个字符
+	movw r2, # 0x2801         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+
+
+	
+	ldr r0, = 0x800f000
+	ldr r1, = 0xffffffff
+	ldr r0, [r0]
+	cmp r0, r1
+	bne an_jian
+	bl __huifu_chuchang_shezhi	@恢复出厂设置
+	bl __xie_flash
+	
+
 an_jian:
-	b ting
-	ldr r0, = guanji_yanshi
+	ldr r0, = dangwei_jia_yanshi
 	movs r1, # 0
 	str r1, [r0]
+	b ting
+@	ldr r0, = guanji_yanshi
+@	movs r1, # 0
+@	str r1, [r0]
 	b __ren_wu_diao_du
 an_jian1:
-	ldr r2, = 3000000
+	ldr r2, = 500000
 	ldr r0, = guanji_yanshi
 	ldr r1, [r0]
 	adds r1, r1, # 1
@@ -416,39 +378,359 @@ an_jian3:
 	bl __an_jian_xianshi
 	b __ren_wu_diao_du
 an_jian4:
-@	movs r0, # 4
-@       bl __an_jian_xianshi
-@	ldr r0,  = xianshi_moshi
-@	movs r1, # 1
-	@	str r1, [r0]
+	
+	movs r0, # 4
+       bl __an_jian_xianshi
 
-	ldr r0, = qingling_z_r
-	ldr r1, = qingling_z_i
-	ldr r2, = z_r
-	ldr r3, = z_i
-	ldr r2, [r2]
-	ldr r3, [r3]
-	str r2, [r0]
-	str r3, [r1]
 	b __ren_wu_diao_du
 an_jian5:
+	ldr r0, = zidong_dangwei_kaiguan
+	ldr r1, = liangcheng
+	movs r2, # 1
+	str r2, [r0]
+	movs r2, # 0
+	str r2, [r1]
+	bl __lcd_qingping
+        ldr r0, = duan_lu
+	movs r1, # 7           @显示几个字符
+	movw r2, # 0x2801         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
 	movs r0, # 5
 	bl __an_jian_xianshi
+        ldr r0, = rs_
+	movs r1, # 2           @显示几个字符
+	movw r2, # 0x0003         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	ldr r0, = xs_
+	movs r1, # 2           @显示几个字符
+	movw r2, # 0x0006        @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	ldr r0, = pinlv
+	ldr r1, = pinlv_xianshi_biao
+	ldr r0, [r0]
+	lsls r0, r0, # 2
+	ldr r0, [r1, r0]
+	movs r1, # 6           @显示几个字符
+	movw r2, # 0x0000         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	
+__duan_lu_qing_ling:
+        bl __xianshi_adc_jiance
+	bl __xianshi_zhu_danwei
+	bl __xianshi_z_fudu
+	bl __xianshi_dangwei
+	bl __jisuan_zukang
+	ldr r0, = z_r
+	ldr r1, = z_i
+	bl __xianshi_zukang
+
+	ldr r0, = dangwei_jia_yanshi
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 1000
+	bne __tiaoguo_dangwei_jia
+	movs r1, # 0
+	str r1, [r0]
+
+	ldr r5, = liangcheng
+	ldr r1, [r5]
+	ldr r0, = khz1_duanlu_qingling_r
+	ldr r2, = khz1_duanlu_qingling_i
+	lsls r6, r1, # 2
+	ldr r0, [r0, r6]
+	ldr r2, [r2, r6]
+	ldr r3, = z_r
+	ldr r4, = z_i
+	ldr r3, [r3]
+	ldr r4, [r4]
+	str r3, [r0]
+	str r4, [r2]
+	ldr r0, = liangcheng
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 7
+	bne __tiaoguo_dangwei_jia
+	movs r1, # 6
+	str r1, [r0]	
+	b __duanlu_qingling_wancheng
+	
+__tiaoguo_dangwei_jia:	
+	bl __an_jian
+	cmp r0, # 8
+	bne __duan_lu_qing_ling
+__duanlu_qingling_wancheng:	
+        bl __lcd_qingping
+        ldr r0, = zidong_dangwei_kaiguan
+	movs r1, # 0
+	str r1, [r0]
+	ldr r0, = zidong
+	movs r1, # 6           @显示几个字符
+	movw r2, # 0x2801         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	
+	
+	
+	ldr r0, = pinlv
+	ldr r1, = pinlv_xianshi_biao
+	ldr r0, [r0]
+	lsls r0, r0, # 2
+	ldr r0, [r1, r0]
+	movs r1, # 6           @显示几个字符
+	movw r2, # 0x0000         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	
+	b an_jian
 	b __ren_wu_diao_du
 an_jian6:
-	movs r0, # 6
-	bl __an_jian_xianshi
+	ldr r0, = jiaozhun_moshi
+	movs r1, # 1
+	str r1, [r0]
+	
+__du_jiaozhunbiao_dao_neicun:	
+	ldr r0, = 0x800f000
+	ldr r1, = jiaozhun3.33mr_r
+	movs r2, # 0
+__du_jiaozhun_biao_xunhuan:
+	mov r5, r2
+	lsls r5, r5, # 2
+	ldr r4, [r0, r5]
+	str r4, [r1, r5]
+	adds r2, r2, # 1
+	cmp r2, # 14
+	bne __du_jiaozhun_biao_xunhuan
+
+
+
+	
+	ldr r0, = liangcheng
+	movs r1, # 0
+	str r1, [r0]
+	bl __lcd_qingping
+	ldr r0, = zidong_dangwei_kaiguan
+	movs r1, # 1
+	str r1, [r0]
+	ldr r0, = rs_
+	movs r1, # 2           @显示几个字符
+	movw r2, # 0x0003         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	ldr r0, = xs_
+	movs r1, # 2           @显示几个字符
+	movw r2, # 0x0006        @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	movs r6, # 0		@ 校准表指针
+__jiaozhun:
+	ldr r0, = dangwei_jia_yanshi
+	movs r1, # 0
+	str r1, [r0]
+        ldr r0, = jiaozhun_liangcheng_biao
+	mov r7, r6
+	lsrs r7, r7, # 2
+	ldr r1, = liangcheng
+	ldrb r0, [r0, r7]
+	str r0, [r1]
+	ldr r0, = jiaozhun3.33mr_r
+	ldr r0, [r0, r6]
+	bl __xianshi_jiaozhun_shuzhi
+	
+__jiaozhun1:
+
+        ldr r0, = jiaozhun_biao
+	ldr r0, [r0, r6]
+	movs r1, # 16           @显示几个字符
+	movw r2, # 0x0001         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	bl __xianshi_zhu_danwei
+	bl __jisuan_zukang
+
+
+        ldr r2, = liangcheng
+	ldr r0, = khz1_duanlu_qingling_r
+	ldr r2, [r2]
+	ldr r1, = khz1_duanlu_qingling_i
+	lsls r2, r2, # 2
+	ldr r0, [r0, r2]
+	ldr r1, [r1, r2]
+	ldr r2, = z_r
+	ldr r3, = z_i
+	ldr r0, [r0]
+	ldr r1, [r1]
+	ldr r4, [r2]
+	ldr r5, [r3]
+	sub r4, r4, r0
+	sub r5, r5, r1
+	str r4, [r2]
+	str r5, [r3]
+
+
+
+
+	
+	ldr r0, = z_r
+	ldr r1, = z_i
+	bl __xianshi_zukang
+	bl __an_jian
+	cmp r0, # 8
+	beq __jiaozhun_jia
+	cmp r0, # 4
+	beq __jiaozhun_jian
+	cmp r0, # 2
+	beq __jiaozhun_zhizhen_jia
+	cmp r0, # 1
+	beq __jiaozhun_zhizhen_jian
+	cmp r0, # 3
+	beq __jiaozhun_wan_fanhui
+	b __jiaozhun
+__jiaozhun_jia:
+	ldr r0, = dangwei_jia_yanshi
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 12
+	bne __jiaozhun1
+	movs r1, # 0
+	str r1, [r0]
+	ldr r0, = jiaozhun3.33mr_r
+	ldr r1, [r0, r6]
+	adds r1, r1, # 1
+	str r1, [r0, r6]
+	ldr r2, = 99999
+	cmp r1, r2
+	bne __jiaozhun
+	mov r1, r2
+	str r1, [r0, r6]
+__jiaozhun_jian:
+        ldr r0, = dangwei_jia_yanshi
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 12
+	bne __jiaozhun1
+	movs r1, # 0
+	str r1, [r0]
+	ldr r0, = jiaozhun3.33mr_r
+	ldr r1, [r0, r6]
+	subs r1, r1, # 1
+	str r1, [r0, r6]
+	ldr r2, = -99999
+	cmp r1, r2
+	bne __jiaozhun
+	mov r1, r2
+	str r1, [r0, r6]
+	b __jiaozhun
+
+__jiaozhun_zhizhen_jia:
+	ldr r0, = dangwei_jia_yanshi
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 12
+	bne __jiaozhun1
+	movs r1, # 0
+	str r1, [r0]
+	adds r6, r6, # 4
+	cmp r6, # 56
+	bne __jiaozhun
+	movs r6, # 52
+	b __jiaozhun
+__jiaozhun_zhizhen_jian:
+	ldr r0, = dangwei_jia_yanshi
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 12
+	bne __jiaozhun1
+	movs r1, # 0
+	str r1, [r0]
+	subs r6, r6, # 4
+	bpl __jiaozhun
+	movs r6, # 0
+	b __jiaozhun
+__jiaozhun_wan_fanhui:
+	bl __lcd_qingping
+	ldr r0, = jiaozhun_wan_cheng
+	movs r1, # 18           @显示几个字符
+	movw r2, # 0x0000         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	ldr r0, = 0x3ffffff
+f:
+	subs r0, r0, # 1
+	bne f
+	bl __xie_flash
+	bkpt # 222
+	
+@	movs r0, # 6
+@	bl __an_jian_xianshi
 	b __ren_wu_diao_du
+	
+__xianshi_jiaozhun_shuzhi:
+	push {r1-r3,r6,lr}
+	movs r6, r0
+	bmi __jiaozhun_shuzhi_shi_fu
+__jiaozhun_shuzhi_bushi_fu:
+	ldr r0, = kong
+	movs r1, # 1           @显示几个字符
+	movw r2, # 0x2400         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	b __xianshi_jiaozhun_shuzhi1
+__jiaozhun_shuzhi_shi_fu:
+	ldr r0, = fu
+	movs r1, # 1           @显示几个字符
+	movw r2, # 0x2400         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	mvns r6, r6
+	adds r6, r6, # 1
+__xianshi_jiaozhun_shuzhi1:
+	mov r0, r6
+	movs r1, # 5             @转换几个字符
+	ldr r2, = asciibiao
+	movs r3, # 0xff             @小数点位置
+	bl __zhuanascii
+	ldr r0, = asciibiao
+	movs r1, # 5           @显示几个字符
+	movw r2, # 0x2a00         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	pop {r1-r3,r6,pc}
+	.ltorg
+
+	
+	
 an_jian7:
 	movs r0, # 7
         bl __an_jian_xianshi
 	b __ren_wu_diao_du
 an_jian8:
-@	movs r0, # 8
-	@	bl __an_jian_xianshi
-	ldr r0, = xianshi_moshi
+	ldr r0, = zidong_dangwei_kaiguan
+	movs r1, # 1
+	str r1, [r0]
+        ldr r0, = kong
+	movs r1, # 6           @显示几个字符
+	movw r2, # 0x2801         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	
+	
+	ldr r0, = dangwei_jia_yanshi
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 500
+	bne __anjian8_fanhui
 	movs r1, # 0
 	str r1, [r0]
+	ldr r0, = liangcheng
+	ldr r1, [r0]
+	adds r1, r1, # 1
+	str r1, [r0]
+	cmp r1, # 7
+	bne __anjian8_fanhui
+	movs r1, # 0
+	str r1, [r0]
+		
+__anjian8_fanhui:
+	bl __xianshi_dangwei
+	movs r0, # 8
+	bl __an_jian_xianshi
 	b __ren_wu_diao_du
 an_jian9:
 	movs r0, # 9
@@ -463,8 +745,22 @@ an_jian11:
 	bl __an_jian_xianshi
 	b __ren_wu_diao_du
 an_jian12:
+        ldr r0, = zidong_dangwei_kaiguan
+	movs r1, # 0
+	str r1, [r0]
+	ldr r0, = zidong
+	movs r1, # 6           @显示几个字符
+	movw r2, # 0x2801         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	bl __xie_ascii
+	
 	movs r0, # 12
 	bl __an_jian_xianshi
+        ldr r0, = 0xffffff
+__qiehuan_zidong_yanshi:
+	subs r0, r0, # 1
+	bne __qiehuan_zidong_yanshi
+	
+	
 	b __ren_wu_diao_du
 an_jian13:
 	movs r0, # 13
@@ -489,7 +785,7 @@ __an_jian_xianshi:
 	bl __zhuanascii
 	ldr r0, = asciibiao
 	movs r1, # 2           @显示几个字符
-	movw r2, # 0x0000         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	movw r2, # 0x4000         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	pop {r1-r2,pc}
 
@@ -526,8 +822,13 @@ __mansu:
 	bl __xianshi_dangwei
 	bl __jisuan_zukang
 
-        ldr r0, = qingling_z_r
-	ldr r1, = qingling_z_i
+	ldr r2, = liangcheng
+	ldr r0, = khz1_duanlu_qingling_r
+	ldr r2, [r2]
+	ldr r1, = khz1_duanlu_qingling_i
+	lsls r2, r2, # 2
+	ldr r0, [r0, r2]
+	ldr r1, [r1, r2]
 	ldr r2, = z_r
 	ldr r3, = z_i
 	ldr r0, [r0]
@@ -692,12 +993,12 @@ __z_jiaodu_shi_fu:
 	adds r4, r4, # 1
 __xianshi_z_jiaodu:	
 	mov r0, r4
-	movs r1, # 6    @转换几个字符
+	movs r1, # 5    @转换几个字符
 	ldr r2, = asciibiao
 	movs r3, # 3             @小数点位置
 	bl __zhuanascii
 	ldr r0, = asciibiao
-	movs r1, # 6           @显示几个字符
+	movs r1, # 5           @显示几个字符
 	movw r2, # 0x3200         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	pop {r0-r4,pc}
@@ -711,6 +1012,81 @@ __an_jian:
 	lsrs r0, r0, # 28
 	bx lr
 
+__huifu_chuchang_shezhi:
+	push {r0-r6,lr}
+	ldr r0, = zukang_dianzu_biao
+	ldr r1, = zukang_diankang_biao
+	ldr r2, = jiaozhun3.33mr_r
+	movs r5, # 0
+__chuchang_shezhi_xunhuan:
+	mov r6, r5
+	lsls r6, r6, # 2
+	ldr r3, [r0, r6]
+	ldr r4, [r1, r6]
+	str r3, [r2, r6]
+	adds r2, r2, # 4
+	str r4, [r2, r6]
+	adds r5, r5, # 1
+	cmp r5, # 14
+	bne __chuchang_shezhi_xunhuan
+	pop {r0-r6,pc}
+
+__xie_flash:				@ flsh解锁
+	ldr r0, = 0x40022000
+	ldr r1, = 0x45670123
+	str r1, [r0, # 0x04]
+	ldr r1, = 0xcdef89ab
+	str r1, [r0, # 0x04]
+	@擦除1页
+	movs r5, # 1
+	ldr r4, = 0x800f000
+	movs r7, # 1
+	lsls r7, r7, # 10
+_flashmang:
+	ldr r2, [r0, # 0x0c]
+	lsls r2, r2, # 31
+	bmi _flashmang
+	movs r1, # 2
+	str r1, [r0, # 0x10]
+	str r4, [r0, # 0x14]
+	movs r1, # 0x42
+	str r1, [r0, # 0x10]
+	add r4, r4, r7
+	subs r5, # 1
+	bne _flashmang
+	@写FLASH
+	ldr r7, = 0x800f000	@写
+	ldr r4, = jiaozhun3.33mr_r	@读
+	movs r5, # 0
+	movs r6, # 14
+_flashmang1:
+	ldr r2, [r0, # 0x0c]
+	lsls r2, r2, # 31
+	bmi _flashmang1
+	movs r1, # 1
+	str r1, [r0, # 0x10]
+	ldr r3, [r4, r5]
+	str r3, [r7, r5]
+	adds r5, r5, # 4
+_flashmang2:
+	ldr r2, [r0, # 0x0c]
+	lsls r2, r2, # 31
+	bmi _flashmang2
+	subs r6, r6, # 1
+	bne _flashmang1
+_flashmang4:
+	ldr r2, [r0, # 0x0c]
+	lsls r2, r2, # 31
+	bmi _flashmang4
+	movs r1, # 0x80
+	str r1, [r0, # 0x10]          		@flsh上锁
+	ldr r0, = 0xe000ed0c
+	ldr r1, = 0x05fa0004
+	str r1, [r0]          		@复位
+deng_fuwei:
+	b deng_fuwei
+
+	
 
 __pin_lv_jia:
 	cpsid i
@@ -743,15 +1119,9 @@ __pinlv_qiehuan_yanshi:
 	bkpt # 1
 	.ltorg
 	
-	
-	
-
-
-	
-
 __pinlv_shezhi:
 	@入口R0
-	@0=100, 1=1KHZ, 2=10KHZ, 3=100KHZ
+	@0=1KHZ, 1=10KHZ, 2=100KHZ
 	push {r0-r5,lr}
 	ldr r1, = shezhi_pinlv
 	movs r2, # 1
@@ -762,121 +1132,6 @@ __pinlv_shezhi:
 	lsls r2, r2, # 2
 	ldr r2, [r1, r2]
 	mov pc, r2
-
-
-__pinlv_100hz:
-	ldr r0, = 0x40023418
-	movw r1, # 0x1e00
-	str r1, [r0]
-	movw r1, # 0x1e00
-	lsls r1, r1, # 16
-	str r1, [r0]
-	
-	ldr r0, = cos_sin
-	ldr r1, = cos_sin_100hz
-	ldr r2, = dft_shuliang
-	str r1, [r0]
-	movs r1, # 20
-	str r1, [r2]
-	ldr r0, = cos_sin_shuliang
-	movs r1, # 100
-	str r1, [r0]
-	
-	
-	@__dma_chushihua:
-	ldr r0, = 0x40020000
-	movs r1, # 0
-	str r1, [r0, # 0x08]
-	ldr r1, = 0x4002084c
-	str r1, [r0, # 0x10]
-	ldr r1, = dianyabiao
-	str r1, [r0, # 0x14]
-	ldr r1, = 4000                  @采样数量       sl
-	str r1, [r0, # 0x0c]
-	movw r1, # 0x35a1                       @0x3581(单次)，0x35a1(循环)
-	str r1, [r0, # 0x08]
-
-	ldr r0, = 0x40020014
-	movs r1, # 0
-	str r1, [r0, # 0x08]
-	ldr r1, = 0x40012c34
-	str r1, [r0, # 0x10]
-	ldr r1, = zhengxian_100hz
-	str r1, [r0, # 0x14]
-	ldr r1, = 1000
-	str r1, [r0, # 0x0c]
-	movs r1, # 0x11
-	str r1, [r0, # 0x18]
-	movw r1, # 0x36b1
-	str r1, [r0, # 0x08]
-
-	@__adc_chushihua:
-	@采样时间1\128000000（MHZ）*14(周期)= 9142857HZ
-	ldr r0, = 0x40020800
-	ldr r1, =  0x05
-	str r1, [r0, # 0x08]            @开ADC和校准
-__deng_adc_jiaozhun3:
-	ldr r1, [r0, # 0x08]
-	lsls r1, r1, # 29
-	bmi __deng_adc_jiaozhun3         @等ADC校准
-__deng_adc_zhunbeihao3:
-	ldr r1, [r0, # 0x58]
-	lsls r1, r1, # 26
-	bpl __deng_adc_zhunbeihao3       @等ADC准备好
-	movs r1, # 0x01                 @通道选择
-	str r1, [r0, # 0x34]
-	ldr r1, = 0x180101      @0X100101  @0x180101
-	str r1, [r0, # 0x08]
-	str r1, [r0, # 0x08]            @为啥还要开两次。。。
-
-
-
-	ldr r0, = lvbo_changdu
-	ldr r1, = lvbo_youyi
-	movs r2, # 200
-	str r2, [r0]
-	movs r2, # 14
-	str r2, [r1]
-
-	       ldr r0, = 0xe000e010
-	       ldr r1, = 1279999
-	       str r1, [r0, # 4]
-	       str r1, [r0, # 8]
-	       movs r1, # 0x07
-	       str r1, [r0]    @systick 开
-
-
-	@__tim3chushihua:
-	ldr r3, = 0x40000400 @ tim3_cr1
-	ldr r2, = 0
-	str r2, [r3, # 0x28] @ psc
-	ldr r2, = 319                  @639=200KHZ
-	str r2, [r3, # 0x2c] @ ARR
-	movs r2, # 0x20
-	str r2, [r3, # 0x04] @ TRGO
-	movs r2, # 0x01
-	str r2, [r3, # 0x0c]
-	movs r2, # 0x81
-	@__tim1_chushiha:
-	ldr r4, = 0x40012c00 @ tim1_cr1
-	movs r5, # 0
-	str r5, [r4, # 0x28] @ psc
-	ldr r5, = 1279
-	str r5, [r4, # 0x2c] @ ARR
-	@       movs r2, # 0x20
-	@       str r2, [r4, # 0x04]     @TRGO
-	movw r5, # 0x200
-	str r5, [r4, # 0x0c]
-	movs r5, # 0x68
-	str r5, [r4, # 0x18]
-	movs r5, # 0x03
-	str r5, [r4, # 0x20] @ ccer
-	ldr r5, = 0x8000
-	str r5, [r4, # 0x44] @ BDTR
-	ldr r5, = 0x81
-	str r5, [r4]
-	str r2, [r3]
-	pop {r0-r5,pc}
 	
 __pinlv_1khz:
 	ldr r0, = 0x40023418
@@ -1352,6 +1607,10 @@ __adc_jiance_fanhui:
 	
 __zidong_dangwei:
 	push {r0-r3,lr}
+	ldr r0, = zidong_dangwei_kaiguan
+	ldr r1, [r0]
+	cmp r1, # 1
+	beq __zidong_dangwei_fanhui
 __huan_dang:
 	ldr r0, = z_fudu	
 	ldr r0, [r0]
@@ -1387,29 +1646,30 @@ __zi_dong_dang_wei_fan_hui:
 __xianshi_adc_jiance:
 	push {r0-r3,lr}
 	ldr r0, = adc_jiance
-	movs r1, # 7            @转换几个字符
+	movs r1, # 5            @转换几个字符
 	ldr r0, [r0]
 	ldr r2, = asciibiao
 	movs r3, # 0xff             @小数点位置
 	bl __zhuanascii
 	ldr r0, = asciibiao
-	movs r1, # 7           @显示几个字符
+	movs r1, # 5           @显示几个字符
 	movw r2, # 0x5900         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
+__zidong_dangwei_fanhui:	
 	pop {r0-r3,pc}
 
 	
 __xianshi_z_fudu:
 	push {r0-r3,lr}
         ldr r0, = z_fudu
-	movs r1, # 7             @转换几个字符
+	movs r1, # 5             @转换几个字符
 	ldr r0, [r0]
 	ldr r2, = asciibiao
 	movs r3, # 0xff             @小数点位置
 	bl __zhuanascii
 	ldr r0, = asciibiao
-	movs r1, # 7           @显示几个字符
-	movw r2, # 0x5901         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
+	movs r1, # 5           @显示几个字符
+	movw r2, # 0x5c01         @LCD位置lcd位置(高8位0-0x83,低8位0-7)
 	bl __xie_ascii
 	pop {r0-r3,pc}
 __xianshi_dangwei:
@@ -1568,12 +1828,31 @@ __jisuan_z_fudu1:
 	
 __jisuan_zukang:
 	push {r0-r4,r6-r7,lr}
-	ldr r0, = zukang_dianzu_biao
+	ldr r0, = jiaozhun_moshi
+	ldr r1, [r0]
+	cmp r1, # 1
+	beq __jiaozhun_moshi_zukang
+        ldr r0, = flash_dianzu_biao
+	ldr r2, = flash_diankang_biao
 	ldr r1, = liangcheng
 	ldr r1, [r1]
 	lsls r1, r1, # 2
 	ldr r4, [r0, r1]
-	
+	ldr r5, [r2, r1]
+	ldr r4, [r4]
+	ldr r5, [r5]
+	b __suan_zu_kang
+__jiaozhun_moshi_zukang:
+	ldr r0, = ram_dianzu_biao
+	ldr r2, = ram_diankang_biao
+	ldr r1, = liangcheng
+	ldr r1, [r1]
+	lsls r1, r1, # 2
+	ldr r4, [r0, r1]
+	ldr r5, [r2, r1]
+	ldr r4, [r4]
+	ldr r5, [r5]
+__suan_zu_kang:	
 	ldr r0, = shangbi_r
 	ldr r1, = shangbi_i
 	ldr r2, = xiabi_r
@@ -1587,65 +1866,15 @@ __jisuan_zukang:
 	lsls r2, r2, # 10
 	lsls r3, r3, # 10
 	bl __fushu_chufa
-	mov r6, r0
-	mov r7, r1
-	mov r3, r1
-	mov r1, r4
-	movs r2, # 0
-	movs r0, r0
-	bpl __z_r_cheng_dianzu
-	movs r2, # 1
-	mvns r0, r0
-	adds r0, r0, # 1
-__z_r_cheng_dianzu:
-	bl __chengfa
-	lsls r0, r0, # 17
-	lsrs r1, r1, # 15
-	orrs r1, r1, r0
-	cmp r2, # 1
-	bne __z_i_jiance
-	mvns r1, r1
-	adds r1, r1, # 1
-__z_i_jiance:
-	mov r0, r3
-	mov r3, r1
-	mov r1, r4
-	movs r2, # 0
-	movs r0, r0
-	bpl __z_i_cheng_dianzu
-	movs r2, # 1
-	mvns r0, r0
-	adds r0, r0, # 1
-__z_i_cheng_dianzu:
-	bl __chengfa
-	lsls r0, r0, # 17
-	lsrs r1, r1, # 15
-	orrs r0, r0, r1
-	cmp r2, # 1
-	bne __jisuan_zukang_fanhui
-	mvns r0, r0
-	adds r0, r0, # 1
-__jisuan_zukang_fanhui:
-	mov r1, r3
+	mov r2, r4
+	mov r3, r5
+	bl __fushu_chengfa
 	ldr r2, = z_r
 	ldr r3, = z_i
-	str r1, [r2]
-	str r0, [r3]
-	mov r0, r6
-	mov r1, r7
-	bl __suan_atan2
-	movs r1, # 100
-	muls r0, r0, r1
-	asrs r0, r0, # 15
-	ldr r3, = 18000
-	cmp r0, r3
-	bls __bao
-	ldr r3, = 36000
-	subs r0, r0, r3
-__bao:
-	ldr r2, = z_jiao_du
 	str r0, [r2]
+	str r1, [r3]
 	pop {r0-r4,r6-r7,pc}
+
 
 
 	
@@ -1679,7 +1908,7 @@ __huanchong_leijia:
 	mov r0, r1
 	pop {r3-r7,pc}
 	.ltorg
-
+		
 
 	
 __xianshi_shangxia_bi:
@@ -4353,6 +4582,110 @@ __atan2_xuanzhuan:
 	mov r0,r2
 	pop {r2-r6,pc}
 	.ltorg
+
+
+
+__fushu_chengfa:
+	@入口R0=Z1_R, R1=Z1_I,R2=Z2_R,R3=Z2_I
+	@出口R0=Z_R,R1=Z_I
+	push {r4-r7,lr}
+	mov r6, r0
+	mov r7, r1
+	@	lsls r0, r0, # 15
+	@	lsls r1, r1, # 15
+	bl __suan_atan2
+	mov r5, r0
+	mov r0, r2
+	mov r1, r3
+	@	lsls r0, r0, # 15
+	@	lsls r1, r1, # 15
+	bl __suan_atan2
+	@	bkpt # 0
+	mov r1, r5
+	adds r0, r1, r0 @算角度差
+	ldr r1, = 11796480      @360*32768
+	cmp r0, r1
+	bcc __suan_chengfa_shangxiabi_fudu
+	subs r0, r0, r1
+__suan_chengfa_shangxiabi_fudu:
+	mov r5, r0      @保存角度和
+	@      bkpt # 1
+	mov r0, r2
+	mov r1, r3
+	bl __ji_suan_fu_du
+	@       bkpt # 2
+	mov r2, r0
+	mov r0, r6      @上臂R
+	mov r1, r7      @上臂I
+	bl __ji_suan_fu_du
+	@	bkpt # 3
+	mov r1, r2
+	bl __chengfa
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r0, r0, r1
+	mov r3, r0      @Z幅度
+	@	bkpt # 4
+	mov r0, r5
+	bl __suan_cos_sin
+	@      bkpt # 4
+	mov r4, r1
+	mov r1, r3
+	movs r2, # 0
+	movs r0, r0
+	bpl cf1
+	adds r2, r2, # 1
+	mvns r0, r0
+	adds r0, r0, # 1
+cf1:
+	movs r1, r1
+	bpl cf2
+	adds r2, r2, # 1
+	mvns r1, r1
+	adds r1, r1, # 1
+cf2:
+	bl __chengfa
+	@       bkpt # 5
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r1, r1, r0
+	cmp r2, # 1
+	bne __suan_chengfa_xubu
+	mvns r1, r1
+	adds r1, r1, # 1
+__suan_chengfa_xubu:
+	mov r0, r4
+	mov r4, r1      @实部
+	mov r1, r3
+	movs r2, # 0
+	movs r0, r0
+	bpl cf3
+	adds r2, r2, # 1
+	mvns r0, r0
+	adds r0, r0, # 1
+cf3:
+	movs r1, r1
+	bpl cf4
+	adds r2, r2, # 1
+	mvns r1, r1
+	adds r1, r1, # 1
+cf4:
+	bl __chengfa
+	@       bkpt #6
+	lsls r0, r0, # 17
+	lsrs r1, r1, # 15
+	orrs r1, r1, r0
+	cmp r2, # 1
+	bne cf5
+	mvns r1, r1
+	adds r1, r1, # 1
+cf5:
+	mov r0, r4
+	pop {r4-r7,pc}
+	.ltorg
+
+
+
 	
 __fushu_chufa:
 	@入口R0=Z1_R, R1=Z1_I,R2=Z2_R,R3=Z2_I
@@ -4727,13 +5060,65 @@ __systick_fanhui:
 	
 	.ltorg
 	.section .data
+	.equ jiaozhun_3.33mr_r,          0x800f000
+	.equ jiaozhun_3.33mr_i,          0x800f004
+	.equ jiaozhun_33.3mr_r,          0x800f008
+	.equ jiaozhun_33.3mr_i,          0x800f00c
+	.equ jiaozhun_333mr_r,           0x800f010
+	.equ jiaozhun_333mr_i,           0x800f014
+	.equ jiaozhun_3.33r_r,           0x800f018
+	.equ jiaozhun_3.33r_i,           0x800f01c
+	.equ jiaozhun_33.3r_r,           0x800f020
+	.equ jiaozhun_33.3r_i,           0x800f024
+	.equ jiaozhun_333r_r,            0x800f028
+	.equ jiaozhun_333r_i,            0x800f02c
+	.equ jiaozhun_3333r_r,           0x800f030
+	.equ jiaozhun_3333r_i,           0x800f034
+	
+
+	
 	.equ STACHINIT,         	0x20004000      @堆栈顶
 	.equ asciibiao,			0x20000000	@ASCII表
 	.equ xianshi_moshi,		0x20000044
 	.equ shezhi_pinlv,		0x20000048
 	.equ pinlv,			0x2000004c
+	.equ zidong_dangwei_kaiguan,	0x20000050
+	.equ khz1_3.33mr_duanlu_r,	0x20000054
+	.equ khz1_33.3mr_duanlu_r,	0x20000058
+	.equ khz1_333mr_duanlu_r,	0x2000005c
+	.equ khz1_3.33r_duanlu_r,	0x20000060
+	.equ khz1_33.3r_duanlu_r,	0x20000064
+	.equ khz1_333r_duanlu_r,	0x20000068
+	.equ khz1_3333r_duanlu_r,	0x2000006c
+	.equ khz1_3.33mr_duanlu_i,      0x20000070
+	.equ khz1_33.3mr_duanlu_i,      0x20000074
+	.equ khz1_333mr_duanlu_i,       0x20000078
+	.equ khz1_3.33r_duanlu_i,       0x2000007c
+	.equ khz1_33.3r_duanlu_i,       0x20000080
+	.equ khz1_333r_duanlu_i,        0x20000084
+	.equ khz1_3333r_duanlu_i,       0x20000088
 
+	
 	@@不保存
+	.equ jiaozhun_moshi,		0x20000108
+	.equ jiaozhun3.33mr_r,		0x2000010c
+	.equ jiaozhun3.33mr_i,		0x20000110
+	.equ jiaozhun33.3mr_r,		0x20000114
+	.equ jiaozhun33.3mr_i,		0x20000118
+	.equ jiaozhun333mr_r,		0x2000011c
+	.equ jiaozhun333mr_i,		0x20000120
+	.equ jiaozhun3.33r_r,		0x20000124
+	.equ jiaozhun3.33r_i,		0x20000128
+	.equ jiaozhun33.3r_r,		0x2000012c
+	.equ jiaozhun33.3r_i,		0x20000130
+	.equ jiaozhun333r_r,		0x20000134
+	.equ jiaozhun333r_i,		0x20000138
+	.equ jiaozhun3333r_r,		0x2000013c
+	.equ jiaozhun3333r_i,		0x20000140		
+	
+	.equ jiaozhun_r,		0x20000144
+	.equ jiaozhun_i,		0x20000148
+	.equ dangwei_jia_yanshi,	0x2000014c
 	.equ adc_jiance,		0x20000150
 	.equ kuaisu_dangwei_fazhi,	0x20000154
 	.equ kuaisu_dangwei_yanshi,	0x20000158
@@ -4784,6 +5169,42 @@ __systick_fanhui:
 	.equ lvboqizhizhen3,		0x20003650
 	.equ lvboqihuanchong3,		0x20003658
 	@biao dwb
+flash_dianzu_biao:
+	.word jiaozhun_3.33mr_r
+	.word jiaozhun_33.3mr_r
+	.word jiaozhun_333mr_r
+	.word jiaozhun_3.33r_r
+	.word jiaozhun_33.3r_r
+	.word jiaozhun_333r_r
+	.word jiaozhun_3333r_r	
+flash_diankang_biao:
+	.word jiaozhun_3.33mr_i
+	.word jiaozhun_33.3mr_i
+	.word jiaozhun_333mr_i
+	.word jiaozhun_3.33r_i
+	.word jiaozhun_33.3r_i
+	.word jiaozhun_333r_i
+	.word jiaozhun_3333r_i
+ram_dianzu_biao:
+	.word jiaozhun3.33mr_r
+	.word jiaozhun33.3mr_r
+	.word jiaozhun333mr_r
+	.word jiaozhun3.33r_r
+	.word jiaozhun33.3r_r
+	.word jiaozhun333r_r
+	.word jiaozhun3333r_r
+
+
+ram_diankang_biao:
+	.word jiaozhun3.33mr_i
+	.word jiaozhun33.3mr_i
+	.word jiaozhun333mr_i
+	.word jiaozhun3.33r_i
+	.word jiaozhun33.3r_i
+	.word jiaozhun333r_i
+	.word jiaozhun3333r_i
+	
+	
 an_jian_biao:
 	.word an_jian		+1
 	.word an_jian1		+1
@@ -4801,210 +5222,150 @@ an_jian_biao:
 	.word an_jian13          +1
 	.word an_jian14          +1
 	.word an_jian15          +1
+jiaozhun_liangcheng_biao:
+	.byte 0,0,1,1,2,2,3,3,4,4,5,5,6,6
+khz1_duanlu_qingling_r:
+	.word khz1_3.33mr_duanlu_r
+	.word khz1_33.3mr_duanlu_r
+	.word khz1_333mr_duanlu_r
+	.word khz1_3.33r_duanlu_r
+	.word khz1_33.3r_duanlu_r
+	.word khz1_333r_duanlu_r
+	.word khz1_3333r_duanlu_r
+khz1_duanlu_qingling_i:
+	.word khz1_3.33mr_duanlu_i
+	.word khz1_33.3mr_duanlu_i
+	.word khz1_333mr_duanlu_i
+	.word khz1_3.33r_duanlu_i
+	.word khz1_33.3r_duanlu_i
+	.word khz1_333r_duanlu_i
+	.word khz1_3333r_duanlu_i
+	.align 4
 pinlv_biao:
-	.word __pinlv_100hz			+1
 	.word __pinlv_1khz			+1
 	.word __pinlv_10khz			+1
 	.word __pinlv_100khz			+1
 pinlv_xianshi_biao:
-	.word pinlv_100hz
 	.word pinlv_1khz
 	.word pinlv_10khz
 	.word pinlv_100khz
 zukang_dianzu_biao:
-	.int 3300,3300,3300,3300,3300,3300,3300,10000
-	.int 30000,60000,10000,30000,60000,10000,30000,60000
-	.int 10000,30000,60000,10000,18000,30000,60000,18000
+	.int 3300,3300,3300,3300,3300,3300,3300
+zukang_diankang_biao:
+	.int 0,0,0,0,0,0,0
 	.align 4
-rs_danwei_biao:	@31=毫欧，91=欧，81=千欧，41=兆欧
-	.byte 31,31,31,91,91,91,91,91
-	.byte 91,91,81,81,81,81,81,81
-	.byte 81,81,81,41,41,41,41,41
+rs_danwei_biao:		@31=毫欧，91=欧，81=千欧，41=兆欧
+	.byte 31,31,31,91,91,91,91
 zhucanshu_i_danwei_biao:
 	.word xs_danwei
 	.word cs_danwei
 	.word ls_danwei
 xs_danwei:
-	.word xs_danwei_100hz
 	.word xs_danwei_1khz
 	.word xs_danwei_10khz
 	.word xs_danwei_100khz
-xs_danwei_100hz:
 xs_danwei_1khz:
 xs_danwei_10khz:
 xs_danwei_100khz:
-	.byte 31,31,31,91,91,91,91,91
-	.byte 91,91,81,81,81,81,81,81
-	.byte 81,81,81,41,41,41,41,41
+	.byte 31,31,31,91,91,91,91
 zhucanshu_i_xiaoshudian:
 	.word xs_xiaoshudian
 	.word cs_xiaoshudian
 	.word ls_xiaoshudian
-	
+
 xs_xiaoshudian:
-	.word xs_xiaoshudian_100hz
 	.word xs_xiaoshudian_1khz
 	.word xs_xiaoshudian_10khz
 	.word xs_xiaoshudian_100khz
 	@rsd
-xs_xiaoshudian_100hz:
 xs_xiaoshudian_1khz:
 xs_xiaoshudian_10khz:
 xs_xiaoshudian_100khz:
-	.byte 2,3,4,2,3,4,5,3
-	.byte 3,3,1,1,1,2,2,2
-	.byte 3,3,3,  1,1,1,1,2
-	
-	
-	
+	.byte 2,3,4,2,3,4,5
+
+
 cs_danwei:
 	@92=F,42=MF,02=UF,52=nf,62=pf
-	.word cs_danwei_100hz
 	.word cs_danwei_1khz
 	.word cs_danwei_10khz
 	.word cs_danwei_100khz
-cs_danwei_100hz:
-	.byte 42,42,02,02,02,02,02,02
-	.byte 02,02,02,52,52,52,52,52
-	.byte 52,52,52,52,62,62,62,62
 cs_danwei_1khz:
-	.byte 42, 02, 02, 02, 02, 02, 02, 02
-	.byte 52, 52, 52, 52, 52, 52, 52, 52
-	.byte 52, 62, 62, 62, 62, 62, 62, 62
+	.byte 42, 02, 02, 02, 02, 02, 02
 cs_danwei_10khz:
-	.byte 42, 02, 02, 02, 02, 52, 52, 52
-	.byte 52, 52, 52, 52, 52, 52, 62, 62
-	.byte 62, 62, 62, 62, 62, 62, 62, 62
-cs_danwei_100khz:			@csdw
-	.byte 02,02,52,52,52,52,52,52
-	.byte 62,62,62,62,62,62,62,62
-	.byte 62,62,62,62,62,62,62,62
+	.byte 42, 02, 02, 02, 02, 52, 52
+cs_danwei_100khz:				@csdw
+	.byte 02,02,52,52,52,52,52
 cs_xiaoshudian:
-	.word cs_xiaoshudian_100hz
 	.word cs_xiaoshudian_1khz
 	.word cs_xiaoshudian_10khz
 	.word cs_xiaoshudian_100khz
-cs_xiaoshudian_100hz:
-	.byte 4,1,3,3,3,3,2,2
-	.byte 1,1,1,3,3,3,2,2
-	.byte 2,1,1,1,3,3,3,3
 cs_xiaoshudian_1khz:
-	.byte 3, 3, 2, 2, 2, 1, 1, 1
-	.byte 3, 3, 3, 2, 2, 2, 1, 1
-	.byte 1, 3, 3, 3, 2, 2, 2, 1
+	.byte 3, 3, 2, 2, 2, 1, 1
 cs_xiaoshudian_10khz:
-	.byte 2, 2, 1, 1, 1, 3, 3, 3
-	.byte 2, 2, 2, 1, 1, 1, 3, 3
-	.byte 3, 2, 2, 2, 1, 1, 1, 1
-cs_xiaoshudian_100khz:	                  @csxsd
-	.byte 2,1,3,3,2,2,2,2
-	.byte 4,4,4,3,3,3,2,2
-	.byte 2,1,1,1,1,1,1,1
+	.byte 2, 2, 1, 1, 1, 3, 3
+cs_xiaoshudian_100khz:		                  @csxsd
+	.byte 2,1,3,3,2,2,2
 
 cs_weishu:
-	.word cs_weishu_100hz
 	.word cs_weishu_1khz
 	.word cs_weishu_10khz
 	.word cs_weishu_100khz
-cs_weishu_100hz:
-	.short 1000,10,1,1,10,10,1,10
-	.short 1,1,10,1,1,10,1,1
-	.short 10,1,1,10,1,1,1,1
 cs_weishu_1khz:
-	.short 1000, 10,  1, 1, 10, 1,  1, 10
-	.short 1,    1, 10, 1, 1,  10, 1, 1
-	.short 1,    1, 1,  10,1,  1,  1, 1
+	.short 1000, 10,  1, 1, 10, 1,  1
 cs_weishu_10khz:
-	.short 1000, 10, 1, 1, 10, 1, 1, 10
-	.short 1,    1, 10,1, 1,  10, 1, 1
-	.short 10,   1, 1, 10,1,  1, 1, 10
-cs_weishu_100khz:	                               @csws
-	.short 10,10,1,1,10,1,1,10
-	.short 1,1,10,1,1,10,1,1
-	.short 10,1,1,10,10,10,10,100
-	
+	.short 1000, 10, 1, 1, 10, 1, 1
+cs_weishu_100khz:		                               @csws
+	.short 10,10,1,1,10,1,1
+
 ls_danwei:
 	@57=nH,07=uH,37=mH,97=H,87=KH
-	.word ls_danwei_100hz
 	.word ls_danwei_1khz
 	.word ls_danwei_10khz
 	.word ls_danwei_100khz
-ls_danwei_100hz:
-	.byte 07,37,37,37,37,37,37,37
-	.byte 37,97,97,97,97,97,97,97
-	.byte 97,97,97,97,97,97,97,87
 ls_danwei_1khz:
-	.byte 07,07,07,37,37,37,37,37
-	.byte 37,37,37,37,97,97,97,97
-	.byte 97,97,97,97,97,97,97,97
+	.byte 07,07,07,37,37,37,37
 ls_danwei_10khz:
-	.byte 07,07,07,07,07,07,37,37
-	.byte 37,37,37,37,37,37,37,97
-	.byte 97,97,97,97,97,97,97,97
-ls_danwei_100khz:				@lsdw
-	.byte 57,07,07,07,07,07,07,07
-	.byte 07,37,37,37,37,37,37,37
-	.byte 37,37,97,97,97,97,97,97
+	.byte 07,07,07,07,07,07,37
+ls_danwei_100khz:					@lsdw
+	.byte 57,07,07,07,07,07,07
 
 ls_xiaoshudian:
-	.word ls_xiaoshudian_100hz
 	.word ls_xiaoshudian_1khz
 	.word ls_xiaoshudian_10khz
 	.word ls_xiaoshudian_100khz
-ls_xiaoshudian_100hz:
-	.byte 3,1,1,2,2,2,3,3
-	.byte 3,1,1,1,2,2,2,3
-	.byte 3,3,4,4,4,4,5,3
 ls_xiaoshudian_1khz:
-	.byte 2,3,3,1,1,1,2,2
-	.byte 2,3,3,3,1,1,1,2
-	.byte 2,2,3,3,3,3,4,5
+	.byte 2,3,3,1,1,1,2
 ls_xiaoshudian_10khz:
-	.byte 1,2,2,3,3,3,1,1 
-	.byte 1,2,2,2,3,3,3,1
-	.byte 1,1,2,2,2,2,5,4
-ls_xiaoshudian_100khz:	                  @lsxsd
-	.byte 3,1,1,2,2,2,3,3
-	.byte 3,1,1,1,2,2,2,3
-	.byte 3,3,1,1,1,1,2,3
+	.byte 1,2,2,3,3,3,1
+ls_xiaoshudian_100khz:		                  @lsxsd
+	.byte 3,1,1,2,2,2,3
 
 ls_weishu:
-	.word ls_weishu_100hz
 	.word ls_weishu_1khz
 	.word ls_weishu_10khz
 	.word ls_weishu_100khz
-ls_weishu_100hz:
-	.int 10000,10000,10000,10000,10000,10000,100000,10000
-	.int 10000,100000,10000,10000,100000,10000,10000,100000
-	.int 10000,10000,100000,10000,10000,10000,10000,100000
 ls_weishu_1khz:
-	.int 10000,10000,10000,10000,10000,10000,100000,10000
-	.int 10000,100000,10000,10000,100000,10000,10000,100000
-	.int 10000,10000,100000,10000,10000,10000,10000,100000
+	.int 10000,10000,10000,10000,10000,10000,100000
 ls_weishu_10khz:
-	.int 10000,10000,10000,10000,10000,10000,100000,10000
-	.int 10000,100000,10000,10000,100000,10000,10000,100000
-	.int 10000,10000,100000,10000,10000,10000,10000,100000
-ls_weishu_100khz:			@lsws
-	.int 10000,10000,10000,10000,10000,10000,100000,10000
-	.int 10000,100000,10000,10000,100000,10000,10000,100000
-	.int 10000,10000,100000,10000,10000,10000,10000,100000
+	.int 10000,10000,10000,10000,10000,10000,100000
+ls_weishu_100khz:				@lsws
+	.int 10000,10000,10000,10000,10000,10000,100000
 
 
 
 zukang_xiaoshudian:
-	.word zukang_xiaoshudian_100hz
 	.word zukang_xiaoshudian_1khz
 	.word zukang_xiaoshudian_10khz
 	.word zukang_xiaoshudian_100khz
-zukang_xiaoshudian_100hz:
 zukang_xiaoshudian_1khz:
 zukang_xiaoshudian_10khz:
-zukang_xiaoshudian_100khz:		@zkd
-	.byte 2,3,4,2,3,4,5,3
-	.byte 3,3,1,1,1,2,2,2
-	.byte 3,3,3,  1,1,1,1,2
+zukang_xiaoshudian_100khz:			@zkd
+	.byte 2,3,4,2,3,4,5
 
+
+
+
+	
 	.align 4
 dangwei_ascii:
 	.word haoou3.33
@@ -5029,10 +5390,60 @@ ou333:
 	.ascii " 333 R"
 ou3333:
 	.ascii "3333 R"
+zidong:	
+	.ascii "zidong"
+duan_lu:
+	.ascii "duan_lu"
+	.align 4
+jiaozhun_biao:
+	.word __jiaozhun3.33mr_r
+	.word __jiaozhun3.33mr_i
+	.word __jiaozhun33.3mr_r
+	.word __jiaozhun33.3mr_i
+	.word __jiaozhun333mr_r
+	.word __jiaozhun333mr_i
+	.word __jiaozhun3.33r_r
+	.word __jiaozhun3.33r_i
+	.word __jiaozhun33.3r_r
+	.word __jiaozhun33.3r_i
+	.word __jiaozhun333r_r
+	.word __jiaozhun333r_i
+	.word __jiaozhun3333r_r
+	.word __jiaozhun3333r_i
+	
+__jiaozhun3.33mr_r:
+	.ascii "jiaozhun3.33mr_r"
+__jiaozhun3.33mr_i:
+	.ascii "jiaozhun3.33mr_i"
+__jiaozhun33.3mr_r:
+	.ascii "jiaozhun33.3mr_r"
+__jiaozhun33.3mr_i:
+	.ascii "jiaozhun33.3mr_i"
+__jiaozhun333mr_r:
+	.ascii "jiaozhun 333mr_r"
+__jiaozhun333mr_i:
+	.ascii "jiaozhun 333mr_i"
+__jiaozhun3.33r_r:
+	.ascii "jiaozhun 3.33r_r"
+__jiaozhun3.33r_i:
+	.ascii "jiaozhun 3.33r_i"
+__jiaozhun33.3r_r:
+	.ascii "jiaozhun 33.3r_r"
+__jiaozhun33.3r_i:
+	.ascii "jiaozhun 33.3r_i"
+__jiaozhun333r_r:
+	.ascii "jiaozhun  333r_r"
+__jiaozhun333r_i:
+	.ascii "jiaozhun  333r_i"
+__jiaozhun3333r_r:
+	.ascii "jiaozhun 3333r_r"
+__jiaozhun3333r_i:
+	.ascii "jiaozhun 3333r_i"
+	.align 4
 xs_:
 	.ascii "Xs"
 rs_:
-	.ascii "Rs"
+.ascii "Rs"
 cs_:
 	.ascii "Cs"
 ls_:
@@ -5045,12 +5456,14 @@ pinlv_10khz:
 	.ascii " 10khz"
 pinlv_100khz:
 	.ascii "100khz"
+jiaozhun_wan_cheng:
+	.ascii "jiaozhun_wan_cheng"
 yjmwxwx:
-	.ascii "yjmwxwx-20220915"
+	.ascii "yjmwxwx-20230212"
 jia:
 	.ascii	"+"
 kong:
-	.ascii " "
+	.ascii "                      "
 fu:
 	.ascii "-"
 	.align 4
