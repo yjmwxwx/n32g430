@@ -1095,7 +1095,7 @@ __pin_lv_jia:
 	ldr r1, [r0]
 	adds r1, r1, # 1
 	str r1, [r0]
-	cmp r1, # 4
+	cmp r1, # 3
 	bne __pin_lv_fan_hui
 	movs r1, # 0
 	str r1, [r0]
@@ -1322,9 +1322,9 @@ __deng_adc_zhunbeihao1:
 
 	ldr r0, = lvbo_changdu
 	ldr r1, = lvbo_youyi
-	movs r2, # 200
+	movs r2, # 400
 	str r2, [r0]
-	movs r2, # 14
+	movs r2, # 10
 	str r2, [r1]
 
 	       ldr r0, = 0xe000e010
@@ -1435,17 +1435,17 @@ __deng_adc_zhunbeihao:
 
 	ldr r0, = lvbo_changdu
 	ldr r1, = lvbo_youyi
-	movs r2, # 200
+	movs r2, # 400
 	str r2, [r0]
-	movs r2, # 14
+	movs r2, # 10
 	str r2, [r1]
 
-	       @ldr r0, = 0xe000e010
-	      @ ldr r1, = 127999
-	       @str r1, [r0, # 4]
-	      @ str r1, [r0, # 8]
-	     @  movs r1, # 0x07
-	    @ str r1, [r0]    @systick 开
+	       ldr r0, = 0xe000e010
+	      ldr r1, = 127999
+	      str r1, [r0, # 4]
+	      str r1, [r0, # 8]
+	      movs r1, # 0x07
+	     str r1, [r0]    @systick 开
 
 
 @__tim3chushihua:
