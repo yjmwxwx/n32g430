@@ -1321,7 +1321,7 @@ __deng_adc_zhunbeihao22:
 	ldr r1, = lvbo_youyi
 	movs r2, # 440
 	str r2, [r0]
-	movs r2, # 12
+	movs r2, # 9
 	str r2, [r1]
 
 	ldr r0, = 0xe000e010
@@ -1439,7 +1439,7 @@ __deng_adc_zhunbeihao2:
 	ldr r1, = lvbo_youyi
 	movs r2, # 440
 	str r2, [r0]
-	movs r2, # 12
+	movs r2, # 9
 	str r2, [r1]
 
 	ldr r0, = 0xe000e010

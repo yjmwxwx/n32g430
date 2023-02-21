@@ -1401,7 +1401,7 @@ ARM GAS  1.s 			page 1
  1321 0b52 CF49     		ldr r1, = lvbo_youyi
  1322 0b54 5FF4DC72 		movs r2, # 440
  1323 0b58 0260     		str r2, [r0]
- 1324 0b5a 0C22     		movs r2, # 12
+ 1324 0b5a 0922     		movs r2, # 9
  1325 0b5c 0A60     		str r2, [r1]
  1326              	
  1327 0b5e CD48     		ldr r0, = 0xe000e010
@@ -1525,7 +1525,7 @@ ARM GAS  1.s 			page 1
  1439 0c26 9A49     		ldr r1, = lvbo_youyi
  1440 0c28 5FF4DC72 		movs r2, # 440
  1441 0c2c 0260     		str r2, [r0]
- 1442 0c2e 0C22     		movs r2, # 12
+ 1442 0c2e 0922     		movs r2, # 9
  1443 0c30 0A60     		str r2, [r1]
  1444              	
  1445 0c32 9848     		ldr r0, = 0xe000e010
